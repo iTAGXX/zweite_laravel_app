@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 
 test('issued invitation tokens are stored hashed not as plaintext', function () {
     $organization = Organization::factory()->create();
+    setActiveOrganization($organization->id);
 
     ['invitation' => $invitation, 'plainTextToken' => $plainTextToken] = (new IssueInvitationToken)->handle(
         $organization,
@@ -23,6 +24,7 @@ test('issued invitation tokens are stored hashed not as plaintext', function () 
 
 test('a valid invitation token can be consumed only once', function () {
     $organization = Organization::factory()->create();
+    setActiveOrganization($organization->id);
 
     ['invitation' => $invitation, 'plainTextToken' => $plainTextToken] = (new IssueInvitationToken)->handle(
         $organization,
@@ -36,6 +38,7 @@ test('a valid invitation token can be consumed only once', function () {
 
 test('an expired invitation token is rejected', function () {
     $organization = Organization::factory()->create();
+    setActiveOrganization($organization->id);
 
     ['invitation' => $invitation, 'plainTextToken' => $plainTextToken] = (new IssueInvitationToken)->handle(
         $organization,
@@ -53,6 +56,7 @@ test('an expired invitation token is rejected', function () {
 
 test('a used invitation token is rejected', function () {
     $invitation = Invitation::factory()->used()->create();
+    setActiveOrganization($invitation->organization_id);
 
     expect($invitation->isUsed())->toBeTrue()
         ->and($invitation->isValid())->toBeFalse();

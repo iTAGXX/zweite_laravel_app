@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToOrganization;
 use App\Models\Concerns\HasExpirableToken;
 use Database\Factories\InvitationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -11,7 +12,6 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -29,7 +29,7 @@ use Illuminate\Support\Carbon;
 class Invitation extends Model
 {
     /** @use HasFactory<InvitationFactory> */
-    use HasExpirableToken, HasFactory, HasUuids;
+    use BelongsToOrganization, HasExpirableToken, HasFactory, HasUuids;
 
     /**
      * @return array<string, string>
@@ -41,13 +41,5 @@ class Invitation extends Model
             'expires_at' => 'datetime',
             'used_at' => 'datetime',
         ];
-    }
-
-    /**
-     * @return BelongsTo<Organization, $this>
-     */
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
     }
 }

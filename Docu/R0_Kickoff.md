@@ -20,7 +20,7 @@ R0 abschließen, bevor R1 (Plattformkern) oder Fachmodule (Verein, Pferdebetrieb
 
 Vorhanden: Laravel 13, PHP ^8.4, Livewire 4, Flux 2, Fortify, Pest, Pint, Larastan Level 7, App-Shell, Smoke-Tests, README/Herd, UI-Locale `de`, `Docu/architecture/*`, EquiFlow-Block in `AGENTS.md`/`CLAUDE.md`.
 
-Fehlt: Tenant-Global-Scope, RBAC, Audit, Einladungen.
+Fehlt: RBAC, Audit, Einladungs-Flow.
 
 ## Empfohlene Reihenfolge
 
@@ -38,7 +38,7 @@ Abweichungen vom Backlog sind Absicht: Doku früh, Tenant-Middleware erst nach O
 | 8 | **SEC-001** | done | Fortify ist da. Session/Logout/Verifikation gegen Akzeptanzkriterien prüfen. |
 | 9 | **SEC-007** | done | Login-Rate-Limit existiert. Header + 429-Tests nachziehen. Unabhängig von Tenant. |
 | 10 | **SEC-002** | done | Reset ist da. Einladungs-Token-Modell neu (für SEC-005). |
-| 11 | **SEC-003** | neu | Harte Tenant-Isolation. Kern von R0. |
+| 11 | **SEC-003** | done | Harte Tenant-Isolation. Kern von R0. |
 | 12 | **SEC-004** | neu | RBAC, Policies, Standardrollen. |
 | 13 | **SEC-005** | neu | Einladungen + Org-Switcher. |
 | 14 | **SEC-006** | neu | Audit-Log. |
@@ -58,7 +58,7 @@ R1 (`CORE-001`) erst, wenn die Tabelle unten durchgängig `done` oder bewusst `s
 | DEV-008 | **done** | `Docu/architecture/*`, EquiFlow-Block in AGENTS/CLAUDE, `.ai/rules/index.md` | — |
 | SEC-001 | **done** | Fortify, `MustVerifyEmail`, `verified` auf Dashboard/Tenant, Session `http_only` + `same_site=lax`, Logout invalidiert Session (Pest) | — |
 | SEC-002 | **done** | Fortify-Reset, `MAIL_MAILER=log`, enumeration-safe Link-Request, `invitations` (`expires_at`/`used_at`, gehasht) | — |
-| SEC-003 | offen / neu | — | ActiveOrganization, Global Scope, IDOR-Tests |
+| SEC-003 | **done** | Session-Kontext [ADR-0003](architecture/adr/0003-organization-context-session.md), `BelongsToOrganization` auf `Invitation`, IDOR → 404 | — |
 | SEC-004 | offen / neu | — | Role/Permission, Policies, Seeder |
 | SEC-005 | offen / neu | — | Invitation-Flow, Org-Switcher |
 | SEC-006 | offen / neu | — | AuditLog, Observer, Allowlist, Admin-Ansicht |
@@ -73,7 +73,7 @@ R1 (`CORE-001`) erst, wenn die Tabelle unten durchgängig `done` oder bewusst `s
 | UI-Locale Deutsch als Default | DEV-001 | **Entschieden:** `APP_LOCALE=de`, Fallback `en`. Tests erzwingen `en` in `phpunit.xml`. |
 | E-Mail-Verifikation Pflicht für Pilot? | SEC-001 | **Entschieden:** Pflicht. `User` implementiert `MustVerifyEmail`; Dashboard/Tenant hinter `verified`. Siehe [ADR-0002](architecture/adr/0002-email-verification-required.md). |
 | Standardrollen-Namen | SEC-004 | Backlog: admin, treasurer, member, staff. Nicht umbenennen ohne ADR. |
-| Org-Kontext: Session vs. URL | SEC-003 | Kleinste reversible Lösung; als ADR dokumentieren. |
+| Org-Kontext: Session vs. URL | SEC-003 | **Entschieden:** Session (`active_organization_id`) plus `Context`. Siehe [ADR-0003](architecture/adr/0003-organization-context-session.md). |
 
 Nicht in R0 entscheiden: Payment-Provider, Newsletter, Health Scores, konkrete Fremdsoftware-Connectoren.
 

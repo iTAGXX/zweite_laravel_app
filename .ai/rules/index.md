@@ -7,6 +7,7 @@ Before planning or editing, find the row whose globs match the file's path and r
 | app/Actions/**/*.php | .ai/rules/actions.md |
 | app/**/*.php | .ai/rules/app.md |
 | Docu/architecture/** | .ai/rules/architecture.md |
+| bootstrap/app.php | .ai/rules/bootstrap.md |
 | resources/views/components/offline-notice.blade.php | .ai/rules/components.md |
 | config/session.php | .ai/rules/config.md |
 | composer.json, .env.example, phpstan.neon | .ai/rules/general.md |

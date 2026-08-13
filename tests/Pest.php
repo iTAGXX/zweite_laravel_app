@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureActiveOrganization;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,6 +17,9 @@ use Tests\TestCase;
 
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
+    ->beforeEach(function (): void {
+        EnsureActiveOrganization::forget();
+    })
     ->in('Feature');
 
 /*
@@ -44,7 +48,7 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function setActiveOrganization(string $organizationId): void
 {
-    // ..
+    EnsureActiveOrganization::set($organizationId);
 }

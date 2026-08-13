@@ -15,4 +15,7 @@ Domain aggregates (Organization, later people/horses/contracts) use UUID primary
 User implements MustVerifyEmail (ADR-0002). Keep Fortify Features::emailVerification enabled. Do not drop the interface without a new ADR; otherwise verified middleware is a no-op and unverified users reach the dashboard.
 
 ## Invitation tokens are hashed single-use
-Invitation is a UUID domain aggregate with organization_id NOT NULL, hashed token, expires_at, and used_at. Issue via IssueInvitationToken; consume() once. Do not store plaintext tokens. BelongsToOrganization global scope comes in SEC-003.
+Invitation is a UUID domain aggregate with organization_id NOT NULL, hashed token, expires_at, and used_at. Issue via IssueInvitationToken; consume() once. Do not store plaintext tokens. Invitation uses BelongsToOrganization.
+
+## BelongsToOrganization is required on tenant models
+Tenant-owned models (not Organization, User, or join tables like organization_memberships) must use the BelongsToOrganization trait. Missing context yields no rows. Cross-tenant IDs are 404, never 200 with a different error.

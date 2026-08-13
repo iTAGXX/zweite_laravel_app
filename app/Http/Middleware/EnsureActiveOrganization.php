@@ -6,11 +6,37 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Context;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureActiveOrganization
 {
     public const string SESSION_KEY = 'active_organization_id';
+
+    public static function id(): ?string
+    {
+        $fromContext = Context::get(self::SESSION_KEY);
+
+        if (is_string($fromContext) && $fromContext !== '') {
+            return $fromContext;
+        }
+
+        $fromSession = session()->get(self::SESSION_KEY);
+
+        return is_string($fromSession) && $fromSession !== '' ? $fromSession : null;
+    }
+
+    public static function set(string $organizationId): void
+    {
+        Context::add(self::SESSION_KEY, $organizationId);
+        session()->put(self::SESSION_KEY, $organizationId);
+    }
+
+    public static function forget(): void
+    {
+        Context::forget(self::SESSION_KEY);
+        session()->forget(self::SESSION_KEY);
+    }
 
     /**
      * @param  Closure(Request): (Response)  $next
@@ -26,6 +52,7 @@ class EnsureActiveOrganization
         $sessionOrganizationId = $request->session()->get(self::SESSION_KEY);
 
         if (is_string($sessionOrganizationId) && $user->memberships()->where('organization_id', $sessionOrganizationId)->exists()) {
+            self::set($sessionOrganizationId);
             $request->attributes->set('activeOrganizationId', $sessionOrganizationId);
 
             return $next($request);
@@ -34,12 +61,12 @@ class EnsureActiveOrganization
         $membership = $user->memberships()->first();
 
         if ($membership === null) {
-            $request->session()->forget(self::SESSION_KEY);
+            self::forget();
 
             return response()->view('errors.no-organization', status: 403);
         }
 
-        $request->session()->put(self::SESSION_KEY, $membership->organization_id);
+        self::set($membership->organization_id);
         $request->attributes->set('activeOrganizationId', $membership->organization_id);
 
         return $next($request);

@@ -30,7 +30,7 @@ Kurze Landkarte für Entwickler und Coding-Agents. Ticket-Details stehen im Back
 - JSON-Fehler für `api/*` und `expectsJson()` in `bootstrap/app.php` (schon konfiguriert).
 - Livewire-first: keine allgemeine REST-API im MVP. Nur punktuelle Controller (Webhooks, Health `/up`, öffentliche Anmeldung später).
 - Security-Header global (`SecurityHeaders`: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`). Login-Rate-Limit 5/min (Fortify `RateLimiter` `login`). Passwort-Reset enumeration-safe; Einladungs-Token (`invitations`) mit `expires_at`/`used_at` (gehasht, Single-Use).
-- Routen: `routes/web.php` plus bereichsspezifische Dateien (`routes/settings.php`). Mandanten-Routen: Middleware-Gruppe `tenant` (`EnsureActiveOrganization`, Session-Key `active_organization_id`). Session vs. URL entscheidet SEC-003.
+- Routen: `routes/web.php` plus bereichsspezifische Dateien (`routes/settings.php`). Mandanten-Routen: Middleware-Gruppe `tenant` (`EnsureActiveOrganization`, Session-Key `active_organization_id`, [ADR-0003](adr/0003-organization-context-session.md)).
 
 ## Frontend
 
@@ -43,7 +43,7 @@ Kurze Landkarte für Entwickler und Coding-Agents. Ticket-Details stehen im Back
 
 ## Mandanten (ab DEV-003 / SEC-003)
 
-`EnsureActiveOrganization` setzt die aktive Organisation in der Session. Jede Fachentität trägt `organization_id` und (ab SEC-003) einen Eloquent Global Scope. Cross-Tenant-Zugriff liefert 404 ohne Datenleck. UI-Ausblenden ersetzt keine serverseitige Prüfung.
+`EnsureActiveOrganization` setzt die aktive Organisation in Session und `Context` ([ADR-0003](adr/0003-organization-context-session.md)). Jede Fachentität trägt `organization_id` und den Eloquent Global Scope `BelongsToOrganization`. Cross-Tenant-Zugriff liefert 404 ohne Datenleck. UI-Ausblenden ersetzt keine serverseitige Prüfung. `organization_memberships` bleibt ohne diesen Scope (Join-Tabelle).
 
 ## Dateien und Betrieb
 
