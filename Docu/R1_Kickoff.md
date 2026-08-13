@@ -19,9 +19,7 @@ R1 schließt den Plattformkern, bevor R2 (Verein) oder R3 (Pferdebetrieb) beginn
 
 ## Ist-Stand (Repo)
 
-Vorhanden: R0 komplett (Tenant-Session [ADR-0003](architecture/adr/0003-organization-context-session.md), `BelongsToOrganization`, RBAC [ADR-0004](architecture/adr/0004-custom-rbac.md), Audit [ADR-0005](architecture/adr/0005-immutable-audit-log.md), Fortify, PWA, Flux-Shell). `organizations` (UUID, `name`/`slug`, `type`, `enabled_modules`). Org-Settings. User-Settings (Profil/Sicherheit/Erscheinung). Nav-Items hinter Gates und Modul-Flags. Placeholder `/members` `/finance` `/stable`. Storage-Disks `local`/`s3` in `config/filesystems.php`. `people` (UUID, Kontaktfelder, optionales `user_id`, `archived_at`, [ADR-0007](architecture/adr/0007-person-aggregate-and-archive.md)). `tasks` (UUID, Assignee=`Person`, Status/Priorität, `task_links` Allowlist, [ADR-0009](architecture/adr/0009-task-aggregate-and-allowlisted-links.md)). `documents`/`document_versions` (zufällige Keys, MIME-Whitelist, Signed Downloads, [ADR-0008](architecture/adr/0008-document-storage.md)).
-
-Fehlt: Recurrence.
+Vorhanden: R0 komplett (Tenant-Session [ADR-0003](architecture/adr/0003-organization-context-session.md), `BelongsToOrganization`, RBAC [ADR-0004](architecture/adr/0004-custom-rbac.md), Audit [ADR-0005](architecture/adr/0005-immutable-audit-log.md), Fortify, PWA, Flux-Shell). `organizations` (UUID, `name`/`slug`, `type`, `enabled_modules`). Org-Settings. User-Settings (Profil/Sicherheit/Erscheinung). Nav-Items hinter Gates und Modul-Flags. Placeholder `/members` `/finance` `/stable`. Storage-Disks `local`/`s3` in `config/filesystems.php`. `people` (UUID, Kontaktfelder, optionales `user_id`, `archived_at`, [ADR-0007](architecture/adr/0007-person-aggregate-and-archive.md)). `tasks` (UUID, Assignee=`Person`, Status/Priorität, `task_links` Allowlist, [ADR-0009](architecture/adr/0009-task-aggregate-and-allowlisted-links.md)). `task_recurrences` (monatlich/jährlich, Idempotenz `occurrence_key`, Pause/Ende, [ADR-0010](architecture/adr/0010-recurrence-subset.md)). `documents`/`document_versions` (zufällige Keys, MIME-Whitelist, Signed Downloads, [ADR-0008](architecture/adr/0008-document-storage.md)).
 
 ## Empfohlene Reihenfolge
 
@@ -33,7 +31,7 @@ Abweichungen vom Backlog sind Absicht: Stufe-A-P0 zuerst; CORE-006/007 bewusst s
 | 2 | **CORE-002** | done | Personenstamm. Blockt Aufgaben, Dokumente, später CLUB/EQ. |
 | 3 | **CORE-003** | done | Aufgaben. Nach CORE-002 unabhängig von Dokumenten. |
 | 4 | **CORE-005** | done | Storage/Dokumente. Nach CORE-002 unabhängig von Aufgaben. Parallel zu CORE-003 erlaubt. |
-| 5 | **CORE-004** | open | Recurrence. Erst wenn Tasks stehen. |
+| 5 | **CORE-004** | done | Recurrence. Erst wenn Tasks stehen. |
 | 6 | **CORE-006** | skipped | Dokumentverknüpfungen brauchen Pferde/Sitzungen/Verträge. Erst mit R2/R3. |
 | 7 | **CORE-007** | skipped | Inbox/Mail erst, wenn Aufgaben und echte Empfänger produktiv genutzt werden. |
 
@@ -46,7 +44,7 @@ R2 (`CLUB-001`) erst, wenn die Tabelle unten durchgängig `done` oder bewusst `s
 | CORE-001 | **done** | `OrganizationType` + `enabled_modules` JSON auf `organizations` ([ADR-0006](architecture/adr/0006-organization-type-and-module-flags.md)); Admin-UI `/settings/organization`; Nav/Routen folgen Flags (`module:club`/`module:stable`); Änderungen nur aktiver Mandant | — |
 | CORE-002 | **done** | `Person` UUID-Fachaggregat, `BelongsToOrganization`, Kontaktfelder, optionales `user_id`, `archived_at` (kein SoftDeletes) ([ADR-0007](architecture/adr/0007-person-aggregate-and-archive.md)); CRUD `/people` hinter `people.manage`; Standardliste ohne Archivierte; Cross-Tenant 404 | — |
 | CORE-003 | **done** | `Task` UUID-Fachaggregat, `BelongsToOrganization`, Assignee=`Person`, Status/Priorität-Enums, `task_links` mit Allowlist (`person` zuerst) ([ADR-0009](architecture/adr/0009-task-aggregate-and-allowlisted-links.md)); CRUD `/tasks` hinter `tasks.manage`; Quick-Create in 3 Schritten; Filter Status/Verantwortlicher; Cross-Tenant 404 | — |
-| CORE-004 | **open** | `routes/console.php` (Scheduler-Einstieg) | Recurrence-Subset (monatlich/jährlich); Job mit Idempotenzschlüssel; next occurrence; pause/end; kein Doppel-Erzeugen bei erneutem Lauf |
+| CORE-004 | **done** | `TaskRecurrence` UUID, `BelongsToOrganization`; Frequenz-Enum `monthly`/`yearly` (kein RRULE); Job `GenerateDueRecurringTasks` täglich mit `occurrence_key`-Idempotenz, `next_occurrence_on`, Pause/`ends_on`; Cross-Tenant 404; UI `/tasks/recurrences` hinter `tasks.manage` ([ADR-0010](architecture/adr/0010-recurrence-subset.md)) | — |
 | CORE-005 | **done** | `Document`/`DocumentVersion` UUID, `BelongsToOrganization`; Disk `local`/`s3` via `DOCUMENT_DISK`; zufällige Keys; MIME-/Größen-Whitelist; Signed Temporary URLs; Upload/Download/Delete hinter `documents.manage`; Cross-Tenant-Download 403 ([ADR-0008](architecture/adr/0008-document-storage.md)) | — |
 | CORE-006 | **skipped** | — | Bewusst nicht: polymorphe DocumentLinks und Kategorien, bis R2/R3 Objekte existieren. |
 | CORE-007 | **skipped** | Fortify-Mail (`MAIL_MAILER=log`); Queue-Infrastruktur im Stack | Bewusst nicht: Notification-Inbox und Mail-Adapter. Nachziehen, wenn CORE-003 produktiv und Versandbedarf da ist. |
@@ -61,7 +59,7 @@ R2 (`CLUB-001`) erst, wenn die Tabelle unten durchgängig `done` oder bewusst `s
 | Person vs. User | CORE-002 | Erledigt: `User` bleibt Login (Integer). `Person` ist Fachaggregat (UUID), optionales `user_id`, keine Pflicht-1:1 ([ADR-0007](architecture/adr/0007-person-aggregate-and-archive.md)). |
 | Archivierung | CORE-002 | Erledigt: `archived_at` statt SoftDeletes. Standardliste blendet archivierte aus. |
 | Task-Verknüpfungen | CORE-003 | Erledigt: `task_links` mit Enum-Allowlist (`TaskLinkableType::Person`); keine Fake-Fachmodelle ([ADR-0009](architecture/adr/0009-task-aggregate-and-allowlisted-links.md)). |
-| Recurrence-Format | CORE-004 | Eigenes Regel-Subset (monatlich/jährlich) statt voller iCal-RRULE, solange der Bedarf so klein ist. |
+| Recurrence-Format | CORE-004 | Erledigt: Eigenes Regel-Subset (monatlich/jährlich) statt voller iCal-RRULE ([ADR-0010](architecture/adr/0010-recurrence-subset.md)). |
 | Document-Disk | CORE-005 | Erledigt: Default `local` in Dev/Tests, `s3` über `DOCUMENT_DISK` in Cloud. Kein Public-Pfad, Downloads immer `attachment` ([ADR-0008](architecture/adr/0008-document-storage.md)). |
 
 Nicht in R1 entscheiden: Payment-Provider, Newsletter, polymorphe DocumentLinks (CORE-006), Health Scores, konkrete Fremdsoftware-Connectoren.

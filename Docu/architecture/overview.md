@@ -48,7 +48,7 @@ Kurze Landkarte für Entwickler und Coding-Agents. Ticket-Details stehen im Back
 
 `Person` ist das zentrale Personenaggregat (UUID, optionales `user_id`, Archiv über `archived_at`, [ADR-0007](adr/0007-person-aggregate-and-archive.md)). Member-/Customer-Profile kommen später und zeigen auf dieselbe Person.
 
-`Task` ist das zentrale Aufgabenaggregat (UUID, Assignee=`Person`, Status/Priorität, Quick-Create, [ADR-0009](adr/0009-task-aggregate-and-allowlisted-links.md)). Objekt-Links über `task_links` mit Enum-Allowlist (zuerst `person`); keine Fake-Fachmodelle.
+`Task` ist das zentrale Aufgabenaggregat (UUID, Assignee=`Person`, Status/Priorität, Quick-Create, [ADR-0009](adr/0009-task-aggregate-and-allowlisted-links.md)). Objekt-Links über `task_links` mit Enum-Allowlist (zuerst `person`); keine Fake-Fachmodelle. Wiederkehrende Aufgaben sind `TaskRecurrence` (monatlich/jährlich, [ADR-0010](adr/0010-recurrence-subset.md)): der tägliche Job erzeugt `Task`-Instanzen mit Idempotenzschlüssel `occurrence_key`; Pause/`ends_on` stoppen die Serie.
 
 `Document` / `DocumentVersion` speichern Dateimetadaten mandantenbezogen; Bytes liegen auf der Storage-Disk (`local` bzw. `s3` über `DOCUMENT_DISK`), Downloads über signierte Temporary URLs mit `Content-Disposition: attachment` ([ADR-0008](adr/0008-document-storage.md)). Cross-Tenant-Download ist 403.
 

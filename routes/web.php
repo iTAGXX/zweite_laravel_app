@@ -32,6 +32,7 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
     });
     Route::middleware('can:'.PermissionName::TasksManage->value)->group(function () {
         Route::livewire('tasks', 'pages::tasks.index')->name('tasks.index');
+        Route::livewire('tasks/recurrences', 'pages::tasks.recurrences')->name('tasks.recurrences');
         Route::livewire('tasks/{task}/edit', 'pages::tasks.edit')->name('tasks.edit');
     });
     Route::middleware('can:'.PermissionName::DocumentsManage->value)->group(function () {

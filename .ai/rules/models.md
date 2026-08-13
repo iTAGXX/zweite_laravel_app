@@ -40,3 +40,6 @@ Document and DocumentVersion are UUID tenant aggregates with BelongsToOrganizati
 
 ## Task is UUID tenant aggregate with person assignee
 Task is a UUID tenant aggregate with BelongsToOrganization. Assignee is Person (assignee_id), not User. Status/priority are PHP enums. Object links live in task_links with a closed TaskLinkableType allowlist (person first); do not add fake domain models or open morph. Cross-tenant IDs are 404.
+
+## TaskRecurrence monthly/yearly subset with occurrence_key
+TaskRecurrence is a UUID tenant aggregate with BelongsToOrganization. Frequency is monthly|yearly (no iCal RRULE). day_of_month 1-31 is clamped to the last day of the target month; month 1-12 is required for yearly. Generated Task rows store occurrence_key `{recurrence_id}:{Y-m-d}` with a unique index per organization. Cross-org generation uses TaskRecurrence::queryDueAcrossOrganizations() (withoutGlobalScope) then sets Context to the rule's organization_id. See ADR-0010.

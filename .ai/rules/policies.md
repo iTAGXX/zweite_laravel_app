@@ -22,3 +22,6 @@ DocumentPolicy uses documents.manage for viewAny/view/create/update/delete. rest
 
 ## TaskPolicy uses tasks.manage
 TaskPolicy uses tasks.manage for viewAny/view/create/update/complete/assign/delete. restore and forceDelete stay false. Staff does not have tasks.manage yet.
+
+## TaskRecurrencePolicy uses tasks.manage
+TaskRecurrencePolicy uses tasks.manage for viewAny/view/create/update/pause/resume/end. delete, restore, and forceDelete stay false; stop a series with pause or end, not a hard delete.

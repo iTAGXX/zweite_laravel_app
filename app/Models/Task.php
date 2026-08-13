@@ -29,6 +29,8 @@ use Illuminate\Support\Carbon;
  * @property TaskPriority $priority
  * @property TaskStatus $status
  * @property Carbon|null $completed_at
+ * @property string|null $recurrence_id
+ * @property string|null $occurrence_key
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -41,6 +43,8 @@ use Illuminate\Support\Carbon;
     'priority',
     'status',
     'completed_at',
+    'recurrence_id',
+    'occurrence_key',
 ])]
 class Task extends Model
 {
@@ -74,6 +78,14 @@ class Task extends Model
     public function assignee(): BelongsTo
     {
         return $this->belongsTo(Person::class, 'assignee_id');
+    }
+
+    /**
+     * @return BelongsTo<TaskRecurrence, $this>
+     */
+    public function recurrence(): BelongsTo
+    {
+        return $this->belongsTo(TaskRecurrence::class, 'recurrence_id');
     }
 
     /**

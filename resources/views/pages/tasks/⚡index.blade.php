@@ -125,15 +125,20 @@ new #[Title('Tasks')] class extends Component
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <flux:heading>{{ __('Tasks') }}</flux:heading>
 
-        <flux:button
-            variant="primary"
-            icon="plus"
-            wire:click="openQuickCreate"
-            class="min-h-11"
-            data-test="quick-create-task-button"
-        >
-            {{ __('New task') }}
-        </flux:button>
+        <div class="flex flex-col gap-2 sm:flex-row">
+            <flux:button :href="route('tasks.recurrences')" variant="ghost" wire:navigate class="min-h-11">
+                {{ __('Recurring tasks') }}
+            </flux:button>
+            <flux:button
+                variant="primary"
+                icon="plus"
+                wire:click="openQuickCreate"
+                class="min-h-11"
+                data-test="quick-create-task-button"
+            >
+                {{ __('New task') }}
+            </flux:button>
+        </div>
     </div>
 
     <div class="grid gap-4 sm:grid-cols-2">

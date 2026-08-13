@@ -35,3 +35,6 @@ Document upload/list are Livewire pages at /documents and /documents/create behi
 
 ## Task routes use tasks.manage
 Task CRUD is Livewire pages at /tasks and /tasks/{task}/edit behind auth+verified+tenant and can:tasks.manage. Quick-create lives on the index page (max three steps). Tasks are platform core, not a club/stable module flag.
+
+## Recurrence routes and daily schedule
+Recurring tasks are Livewire at /tasks/recurrences (tasks.recurrences) behind auth+verified+tenant and can:tasks.manage. Register this route before tasks/{task}/edit. GenerateDueRecurringTasks is scheduled daily in routes/console.php with withoutOverlapping and name recurrences:generate.
