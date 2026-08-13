@@ -1,4 +1,9 @@
 {
+    "You are offline": "Du bist offline",
+    "Reconnect to continue. Changes cannot be saved while you are offline.": "Stelle die Verbindung wieder her, um weiterzuarbeiten. Änderungen können offline nicht gespeichert werden.",
+    "Changes cannot be saved until you are back online.": "Änderungen können erst wieder gespeichert werden, wenn du online bist.",
+    "Could not save": "Speichern fehlgeschlagen",
+    "You are offline. Changes were not saved.": "Du bist offline. Änderungen wurden nicht gespeichert.",
     "No organization": "Keine Organisation",
     "You do not belong to an organization. Ask an administrator to invite you.": "Du gehörst keiner Organisation an. Bitte eine Administratorin oder einen Administrator um eine Einladung.",
     "Forbidden": "Zugriff verweigert",

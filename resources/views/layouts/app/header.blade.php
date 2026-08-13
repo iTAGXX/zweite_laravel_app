@@ -4,6 +4,8 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen overflow-x-hidden bg-white dark:bg-zinc-800">
+        <x-offline-notice />
+
         <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="mr-2 min-h-11 min-w-11 lg:hidden" icon="bars-2" inset="left" />
 

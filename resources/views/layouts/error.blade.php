@@ -8,6 +8,8 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white antialiased dark:bg-zinc-800">
+        <x-offline-notice />
+
         <div class="mx-auto flex min-h-svh max-w-lg flex-col justify-center gap-6 p-6">
             {{ $slot }}
         </div>

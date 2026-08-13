@@ -37,6 +37,7 @@ Kurze Landkarte für Entwickler und Coding-Agents. Ticket-Details stehen im Back
 - Layouts: `resources/views/layouts/` (Desktop: Flux-Sidebar; Mobil: Livewire-Bottom-Nav `mobile-navigation`, Touch-Targets `min-h-11`)
 - Org-Switcher: Platzhalter `x-organization-switcher-placeholder` bis SEC-005
 - Flux-Bausteine: `/dev/ui` nur in `local`/`testing`
+- PWA: Manifest `pwa.manifest` (`/manifest.webmanifest`), Service Worker `/sw.js` (nur GET cachen, keine Livewire-Writes), Offline-Seite `pwa.offline`, Hinweis `x-offline-notice`, Farben in `config/pwa.php`
 - UI-Texte über `__()` / Sprachdateien. Default-Locale `de`, Fallback `en`. Tests: `APP_LOCALE=en` in `phpunit.xml`.
 
 ## Mandanten (ab DEV-003 / SEC-003)

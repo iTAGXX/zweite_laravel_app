@@ -1,6 +1,7 @@
 ---
 paths:
   - 'routes/**'
+  - routes/web.php
 ---
 
 # Routes
@@ -13,3 +14,6 @@ Assign the tenant middleware group (EnsureActiveOrganization) to mandantenbezoge
 
 ## UI kit route only in local and testing
 `/dev/ui` (`dev.ui`) shows Flux building blocks and is registered only when APP_ENV is local or testing. Do not expose it in staging or production.
+
+## PWA manifest is a public JSON route
+Serve the web app manifest at /manifest.webmanifest (pwa.manifest) as a public JSON route. Keep it outside auth/tenant so browsers can install without a session.
