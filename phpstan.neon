@@ -10,4 +10,6 @@ parameters:
         - database/
         - routes/
 
+    # EquiFlow: Larastan Level 7. Analyse über `composer types:check` (512M Memory-Limit).
+    # Ignore-Listen nur mit Begründung und Ticket ergänzen.
     level: 7
