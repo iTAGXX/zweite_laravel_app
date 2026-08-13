@@ -172,7 +172,7 @@ Folgende Grundlagen müssen bereits im Pilot technisch berücksichtigt werden, a
 
 **A – Pilot-MVP (jetzt bauen):**
 
-DEV-001, DEV-003–008, SEC-001–007, CORE-001–005, CLUB-001, CLUB-003, CLUB-007, CLUB-008, CLUB-010, EQ-001–006, FIN-004–007, MIG-001–005, OPS-005, PILOT-001.
+DEV-001, DEV-003–008, SEC-001–011, CORE-001–005, CLUB-001, CLUB-003, CLUB-007, CLUB-008, CLUB-010, EQ-001–006, FIN-004–007, MIG-001–005, OPS-005, PILOT-001.
 
 **B – Nach 10 Kunden:**
 
@@ -206,6 +206,10 @@ Empfohlene Reihenfolge: strikt nach Abhängigkeiten. P1-Tickets können verschob
 | SEC-005   | E1 Auth, Tenant, Rechte      | Benutzereinladung und Organisationswechsel                  | P0       | SEC-002, SEC-004                            | CORE-009, TEN-002                      |
 | SEC-006   | E1 Auth, Tenant, Rechte      | Audit-Log-Grundsystem                                       | P0       | SEC-003, SEC-004                            | CORE-007, SEC-008                      |
 | SEC-007   | E1 Auth, Tenant, Rechte      | Rate Limiting, Security Header und CORS/CSRF-Basis          | P0       | SEC-001, DEV-004                            | SEC-006, SEC-005                       |
+| SEC-008   | E1 Auth, Tenant, Rechte      | Organisations-Benutzerliste                                 | P0       | SEC-005                                     | CORE-009, TEN-002, users.manage        |
+| SEC-009   | E1 Auth, Tenant, Rechte      | Rolle ändern und Membership entfernen                       | P0       | SEC-008, SEC-006                            | CORE-009, users.manage                 |
+| SEC-010   | E1 Auth, Tenant, Rechte      | Einladungslink ohne Mailversand                             | P0       | SEC-005                                     | CORE-009                               |
+| SEC-011   | E1 Auth, Tenant, Rechte      | Benutzer ohne E-Mail-Versand anlegen                        | P0       | SEC-008, SEC-001                            | CORE-009, users.manage                 |
 | CORE-001  | E2 Plattformkern             | Mandantenkonfiguration und Organisationstyp                 | P0       | SEC-004                                     | TEN-003, TEN-004, CORE-010             |
 | CORE-002  | E2 Plattformkern             | Zentraler Personenstamm                                     | P0       | CORE-001                                    | CORE-003                               |
 | CORE-003  | E2 Plattformkern             | Aufgabenmanagement                                          | P0       | CORE-002                                    | CORE-004                               |
@@ -294,6 +298,12 @@ Empfohlene Reihenfolge: strikt nach Abhängigkeiten. P1-Tickets können verschob
 ## R0 – Fundament & Sicherheit
 
 Tickets: DEV-001, DEV-003, DEV-004, DEV-005, DEV-006, DEV-007, DEV-008, SEC-001, SEC-002, SEC-003, SEC-004, SEC-005, SEC-006, SEC-007
+
+## R0-Nachzug – Organisations-Benutzerverwaltung
+
+Tickets: SEC-008, SEC-009, SEC-010, SEC-011
+
+Gap nach SEC-005: `/members` kann nur einladen, nicht bestehende Login-User zeigen oder ohne SMTP aktivieren. Vor R2 umsetzen. Nicht mit CLUB-001 (Vereinsmitglieder/`Person`) vermischen.
 
 ## R1 – Gemeinsamer Kern
 
@@ -1033,6 +1043,206 @@ Abhängigkeiten: SEC-001, DEV-004. Ändere nur Code, der für dieses Ticket erfo
 Scope: Login-Rate-Limit via RateLimiter-Facade; Security-Header-Middleware; CSRF dokumentieren; .ai/rules-Eintrag für Security-Header.
 Akzeptanzkriterien: Login → 429 nach N Versuchen; Security-Header in Response; CSRF aktiv und dokumentiert.
 Tests: Rate-Limit-Integration-Test; Security-Header-Response-Test.
+Verbindliche Regeln: Lies zuerst AGENTS.md/CLAUDE.md und alle passenden Dateien unter .ai/rules. Nutze Boost search-docs vor jeder Code-Änderung. PHP 8.4 strict types. Keine Secrets im Repository. Jeder mandantenbezogene Datenzugriff muss Tenant-Isolation erzwingen (Global Scope); jede sensible Aktion über Policy/Gate absichern. DB-Schemaänderungen nur als Laravel-Migration mit zugehöriger Factory. Keine sachfremden Refactorings. Aktualisiere .ai/rules und Docu/architecture nur soweit dieses Ticket es erfordert. Führe vendor/bin/pint --dirty, composer types:check und php artisan test --compact aus. Am Ende liefere: (1) Kurzfassung der Änderung, (2) geänderte Dateien, (3) Migrationen, (4) ausgeführte Tests mit Ergebnis, (5) offene Risiken/Entscheidungen. Deploye nicht in Produktion.
+```
+
+## SEC-008 – Organisations-Benutzerliste
+
+| **Epic**           | E1 Auth, Tenant, Rechte | **Priorität**  | P0                              |
+|--------------------|-------------------------|----------------|---------------------------------|
+| **Abhängigkeiten** | SEC-005                 | **Lastenheft** | CORE-009, TEN-002, users.manage |
+
+### Ziel
+
+Admins sehen alle Login-User der aktiven Organisation (Name, E-Mail, Rolle), einschließlich des Seeder-Admins.
+
+### Scope
+
+- Livewire auf `/members` um eine Mitgliederliste der Session-Organisation erweitern (neben Einladungsformular und Pending Invitations)
+
+- Query über `organization_memberships` der aktiven Organisation inkl. User und Rolle; kein Global Scope auf der Join-Tabelle, aber hart auf `organization_id` der Session filtern
+
+- Gate `users.manage`; Staff und Rollen ohne Permission erhalten 403
+
+- Nicht mit CLUB-001 vermischen: hier Login-Konten (`User` + Membership), keine Vereinsmitglieder (`Person`)
+
+### Akzeptanzkriterien
+
+- Demo-Admin `test@example.com` ist in der Liste sichtbar, sobald er Membership der aktiven Organisation hat
+
+- User und Memberships anderer Organisationen erscheinen nicht
+
+- Ohne `users.manage` ist `/members` 403
+
+### Pflichttests
+
+- Pest: Liste enthält Memberships der aktiven Organisation (Name, E-Mail, Rolle)
+
+- Pest: Cross-Tenant-Isolation (fremde Memberships unsichtbar)
+
+- Pest: 403 ohne `users.manage`
+
+### Cursor-Prompt
+
+```text
+Implementiere Ticket SEC-008 – Organisations-Benutzerliste.
+Ziel: Admins sehen alle Login-User der aktiven Organisation (Name, E-Mail, Rolle), einschließlich des Seeder-Admins.
+Abhängigkeiten: SEC-005. Ändere nur Code, der für dieses Ticket erforderlich ist.
+Scope: Livewire `/members` um Liste der Session-Organisation erweitern (neben Invite-Formular); Query über organization_memberships inkl. User und Rolle; Gate users.manage; nicht mit CLUB-001 (Person/Vereinsmitglied) vermischen.
+Akzeptanzkriterien: test@example.com sichtbar bei vorhandener Membership; keine fremden Orgs; ohne users.manage 403.
+Tests: Liste der aktiven Org; Cross-Tenant-Isolation; 403 ohne Permission.
+Verbindliche Regeln: Lies zuerst AGENTS.md/CLAUDE.md und alle passenden Dateien unter .ai/rules. Nutze Boost search-docs vor jeder Code-Änderung. PHP 8.4 strict types. Keine Secrets im Repository. Jeder mandantenbezogene Datenzugriff muss Tenant-Isolation erzwingen (Global Scope); jede sensible Aktion über Policy/Gate absichern. DB-Schemaänderungen nur als Laravel-Migration mit zugehöriger Factory. Keine sachfremden Refactorings. Aktualisiere .ai/rules und Docu/architecture nur soweit dieses Ticket es erfordert. Führe vendor/bin/pint --dirty, composer types:check und php artisan test --compact aus. Am Ende liefere: (1) Kurzfassung der Änderung, (2) geänderte Dateien, (3) Migrationen, (4) ausgeführte Tests mit Ergebnis, (5) offene Risiken/Entscheidungen. Deploye nicht in Produktion.
+```
+
+## SEC-009 – Rolle ändern und Membership entfernen
+
+| **Epic**           | E1 Auth, Tenant, Rechte | **Priorität**  | P0                      |
+|--------------------|-------------------------|----------------|-------------------------|
+| **Abhängigkeiten** | SEC-008, SEC-006        | **Lastenheft** | CORE-009, users.manage  |
+
+### Ziel
+
+Admins können die Rolle eines Organisations-Users ändern und eine Membership entfernen, ohne den letzten Admin zu verlieren.
+
+### Scope
+
+- Aktionen auf der Benutzerliste aus SEC-008: Rolle wechseln, Membership entfernen
+
+- Policy/Gate `users.manage`; serverseitig, UI-Ausblenden nur UX
+
+- Letzten Admin der Organisation nicht entfernen und nicht herabstufen
+
+- Eigenes Entfernen (Self-Remove) ablehnen
+
+- Audit über bestehenden `AuditsModelWrites`/`AuditLogger` (Rollenwechsel bereits `membership.role_changed`; Entfernen analog)
+
+### Akzeptanzkriterien
+
+- Die Rolle Treasurer kann vergeben werden; der geänderte User hat danach die neuen Rechte in der Session-Organisation, aber nicht `users.manage`
+
+- Der letzte Admin bleibt Admin und Membership bleibt bestehen
+
+- Self-Remove und fremde Organisation → 403 bzw. 404 ohne Datenleck
+
+### Pflichttests
+
+- Pest: Rollenwechsel aktualisiert `organization_memberships.role_id` und wird auditiert
+
+- Pest: Entfernen löscht nur die Membership der aktiven Organisation
+
+- Pest: letzter Admin und Self-Remove werden abgelehnt
+
+- Pest: Cross-Org 404, ohne Permission 403
+
+### Cursor-Prompt
+
+```text
+Implementiere Ticket SEC-009 – Rolle ändern und Membership entfernen.
+Ziel: Admins können Rolle ändern und Membership entfernen, ohne den letzten Admin zu verlieren.
+Abhängigkeiten: SEC-008, SEC-006. Ändere nur Code, der für dieses Ticket erforderlich ist.
+Scope: Aktionen auf der Benutzerliste; Gate users.manage; letzten Admin nicht entfernen/herabstufen; Self-Remove ablehnen; Audit für Rollenwechsel und Entfernen.
+Akzeptanzkriterien: Rollenwechsel setzt Rechte in der Session-Org (Treasurer ohne users.manage); letzter Admin bleibt; Self-Remove und fremde Org ohne Datenleck.
+Tests: Rollenwechsel + Audit; Entfernen nur aktive Org; letzter Admin und Self-Remove abgelehnt; Cross-Org 404; 403 ohne Permission.
+Verbindliche Regeln: Lies zuerst AGENTS.md/CLAUDE.md und alle passenden Dateien unter .ai/rules. Nutze Boost search-docs vor jeder Code-Änderung. PHP 8.4 strict types. Keine Secrets im Repository. Jeder mandantenbezogene Datenzugriff muss Tenant-Isolation erzwingen (Global Scope); jede sensible Aktion über Policy/Gate absichern. DB-Schemaänderungen nur als Laravel-Migration mit zugehöriger Factory. Keine sachfremden Refactorings. Aktualisiere .ai/rules und Docu/architecture nur soweit dieses Ticket es erfordert. Führe vendor/bin/pint --dirty, composer types:check und php artisan test --compact aus. Am Ende liefere: (1) Kurzfassung der Änderung, (2) geänderte Dateien, (3) Migrationen, (4) ausgeführte Tests mit Ergebnis, (5) offene Risiken/Entscheidungen. Deploye nicht in Produktion.
+```
+
+## SEC-010 – Einladungslink ohne Mailversand
+
+| **Epic**           | E1 Auth, Tenant, Rechte | **Priorität**  | P0       |
+|--------------------|-------------------------|----------------|----------|
+| **Abhängigkeiten** | SEC-005                 | **Lastenheft** | CORE-009 |
+
+### Ziel
+
+Admins können eine Einladung annehmen lassen, ohne SMTP: der Accept-Link ist in der UI kopierbar.
+
+### Scope
+
+- Bei Pending Invitations Aktion „Link kopieren“ (Accept-URL mit Token)
+
+- Plaintext-Token bleibt gehasht in der DB; nicht aus dem Hash rekonstruieren. Token nur einmalig beim Erzeugen bekannt (wie Sanctum). „Link kopieren“ / erneutes Anzeigen stellt einen neuen Token aus und invalidiert den alten, oder zeigt den Link nur unmittelbar nach `sendInvitation`
+
+- Mailversand aus SEC-005 bleibt; fehlender SMTP darf die Einladung nicht blockieren
+
+- Gate `users.manage`; Token nie an Rollen ohne Permission
+
+### Akzeptanzkriterien
+
+- Invitee kann mit kopiertem Link die Einladung annehmen, ohne dass eine Mail zugestellt wurde
+
+- Abgelaufene und bereits verwendete Einladungen bleiben 403
+
+- Staff sieht keinen Accept-Link
+
+### Pflichttests
+
+- Pest: Annahme über kopierten Link ohne Mail-Zustellung (`Mail::fake`)
+
+- Pest: Resend/Copy stellt neuen Token aus; alter Token wird abgelehnt
+
+- Pest: Staff sieht keinen Link; expire/reuse weiter 403
+
+### Cursor-Prompt
+
+```text
+Implementiere Ticket SEC-010 – Einladungslink ohne Mailversand.
+Ziel: Admins können den Accept-Link kopieren und Einladungen ohne SMTP annehmen lassen.
+Abhängigkeiten: SEC-005. Ändere nur Code, der für dieses Ticket erforderlich ist.
+Scope: Pending Invitations „Link kopieren“; Token bleibt gehasht; Copy/Resend stellt neuen Token aus oder zeigt Link nur direkt nach sendInvitation; Mailversand bleibt optional; Gate users.manage.
+Akzeptanzkriterien: Annahme ohne Mail-Zustellung; expire/reuse 403; Staff sieht keinen Link.
+Tests: Annahme mit Mail::fake; alter Token nach Resend ungültig; Staff ohne Link; expire/reuse 403.
+Verbindliche Regeln: Lies zuerst AGENTS.md/CLAUDE.md und alle passenden Dateien unter .ai/rules. Nutze Boost search-docs vor jeder Code-Änderung. PHP 8.4 strict types. Keine Secrets im Repository. Jeder mandantenbezogene Datenzugriff muss Tenant-Isolation erzwingen (Global Scope); jede sensible Aktion über Policy/Gate absichern. DB-Schemaänderungen nur als Laravel-Migration mit zugehöriger Factory. Keine sachfremden Refactorings. Aktualisiere .ai/rules und Docu/architecture nur soweit dieses Ticket es erfordert. Führe vendor/bin/pint --dirty, composer types:check und php artisan test --compact aus. Am Ende liefere: (1) Kurzfassung der Änderung, (2) geänderte Dateien, (3) Migrationen, (4) ausgeführte Tests mit Ergebnis, (5) offene Risiken/Entscheidungen. Deploye nicht in Produktion.
+```
+
+## SEC-011 – Benutzer ohne E-Mail-Versand anlegen
+
+| **Epic**           | E1 Auth, Tenant, Rechte | **Priorität**  | P0                      |
+|--------------------|-------------------------|----------------|-------------------------|
+| **Abhängigkeiten** | SEC-008, SEC-001        | **Lastenheft** | CORE-009, users.manage  |
+
+### Ziel
+
+Admins können einen Login-User direkt anlegen (Passwort, verifiziert, Membership), wenn kein Mailversand verfügbar ist.
+
+### Scope
+
+- Formular auf `/members`: Name, E-Mail, Passwort, Rolle; legt `User` an, setzt `email_verified_at`, erzeugt `OrganizationMembership`
+
+- Kein öffentliches Hintertür-Register; nur `users.manage` der aktiven Organisation
+
+- E-Mail, die in derselben Organisation schon Mitglied ist, abweisen (bestehende Invite-Validierung wiederverwenden)
+
+- Existiert der User bereits ohne Membership dieser Organisation, nur Membership anlegen — kein zweites Konto, Passwort nicht überschreiben
+
+- Audit der Membership-Anlage; Einladungs-Mail ist nicht erforderlich
+
+### Akzeptanzkriterien
+
+- Neu angelegter User kann sich sofort einloggen und die Organisation nutzen (verifiziert, Membership vorhanden)
+
+- Duplikat-E-Mail in derselben Organisation wird abgewiesen
+
+- Ohne `users.manage` 403; fremde Organisation nicht betroffen
+
+### Pflichttests
+
+- Pest: Create setzt User, verifizierte E-Mail und Membership; Login ohne Mail-Zustellung möglich
+
+- Pest: Duplikat in derselben Org fehlgeschlagen
+
+- Pest: bestehender User ohne Membership erhält nur Membership, Passwort unverändert
+
+- Pest: 403 ohne Permission; Cross-Tenant isoliert
+
+### Cursor-Prompt
+
+```text
+Implementiere Ticket SEC-011 – Benutzer ohne E-Mail-Versand anlegen.
+Ziel: Admins legen Login-User direkt an (Passwort, verifiziert, Membership), ohne SMTP.
+Abhängigkeiten: SEC-008, SEC-001. Ändere nur Code, der für dieses Ticket erforderlich ist.
+Scope: Formular auf `/members` (Name, E-Mail, Passwort, Rolle); email_verified_at setzen; Membership anlegen; kein öffentliches Register; Duplikat in derselben Org abweisen; bestehender User ohne Membership nur Membership, Passwort unverändert; Audit; Gate users.manage.
+Akzeptanzkriterien: Sofortiger Login in die Org; Duplikat abgewiesen; ohne Permission 403.
+Tests: Create + Login ohne Mail; Duplikat; bestehender User nur Membership; 403; Tenant-Isolation.
 Verbindliche Regeln: Lies zuerst AGENTS.md/CLAUDE.md und alle passenden Dateien unter .ai/rules. Nutze Boost search-docs vor jeder Code-Änderung. PHP 8.4 strict types. Keine Secrets im Repository. Jeder mandantenbezogene Datenzugriff muss Tenant-Isolation erzwingen (Global Scope); jede sensible Aktion über Policy/Gate absichern. DB-Schemaänderungen nur als Laravel-Migration mit zugehöriger Factory. Keine sachfremden Refactorings. Aktualisiere .ai/rules und Docu/architecture nur soweit dieses Ticket es erfordert. Führe vendor/bin/pint --dirty, composer types:check und php artisan test --compact aus. Am Ende liefere: (1) Kurzfassung der Änderung, (2) geänderte Dateien, (3) Migrationen, (4) ausgeführte Tests mit Ergebnis, (5) offene Risiken/Entscheidungen. Deploye nicht in Produktion.
 ```
 
