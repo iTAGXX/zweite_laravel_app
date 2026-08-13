@@ -22,6 +22,8 @@ npm install
 
 In `.env` `APP_URL` an die Herd-Domain anpassen, z. B. `http://zweite_laravel_app.test`. Die App ist danach unter dieser URL erreichbar.
 
+Demo-Login nach `php artisan migrate --seed`: `test@example.com` / `password` (Organisation `demo`).
+
 Frontend-Assets während der Entwicklung:
 
 ```bash
@@ -42,4 +44,8 @@ npm run dev
 
 Keine Secrets in Git. `.env` bleibt lokal; `.env.example` enthält nur Platzhalter.
 
-Agenten-Leitplanken: `AGENTS.md` / `CLAUDE.md`. Ticket-Reihenfolge: `Docu/R0_Kickoff.md`.
+| Dokument | Inhalt |
+|----------|--------|
+| `AGENTS.md` / `CLAUDE.md` | Agenten-Leitplanken (EquiFlow + Boost) |
+| `Docu/R0_Kickoff.md` | Ticket-Reihenfolge R0 |
+| `Docu/architecture/overview.md` | Architektur, DoD, Security, Git, ADR-Vorlage |

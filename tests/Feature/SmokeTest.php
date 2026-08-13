@@ -11,7 +11,7 @@ test('guests are redirected from the dashboard to login', function () {
 });
 
 test('authenticated users can visit the dashboard', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->withOrganization()->create();
 
     $this->actingAs($user)
         ->get(route('dashboard'))

@@ -18,9 +18,9 @@ R0 abschließen, bevor R1 (Plattformkern) oder Fachmodule (Verein, Pferdebetrieb
 
 ## Ist-Stand (Repo)
 
-Vorhanden: Laravel 13, PHP ^8.4, Livewire 4, Flux 2, Fortify (Login, Register, Reset, E-Mail-Verifikation, 2FA, Passkeys), Pest, Pint, Larastan Level 7, App-Shell (Sidebar), Dashboard-Tests, GitHub Actions `tests.yml` (PHP 8.4), README/Herd-Setup, UI-Locale `de`.
+Vorhanden: Laravel 13, PHP ^8.4, Livewire 4, Flux 2, Fortify, Pest, Pint, Larastan Level 7, App-Shell, Smoke-Tests, README/Herd, UI-Locale `de`, `Docu/architecture/*`, EquiFlow-Block in `AGENTS.md`/`CLAUDE.md`.
 
-Fehlt: Organisationen/Memberships, Tenant-Scope, RBAC, Audit, Einladungen, PWA, ADRs. `.ai/rules` hat erste DEV-001-Einträge.
+Fehlt: Tenant-Global-Scope, RBAC, Audit, Einladungen, PWA.
 
 ## Empfohlene Reihenfolge
 
@@ -29,9 +29,9 @@ Abweichungen vom Backlog sind Absicht: Doku früh, Tenant-Middleware erst nach O
 | # | Ticket | Art | Warum jetzt |
 |---|--------|-----|-------------|
 | 1 | **DEV-001** | done | Inventur geschlossen: Herd-README, Locale `de`, PHP 8.4, Smoke-Tests. |
-| 2 | **DEV-008** | neu | ADRs und `.ai/rules` müssen stehen, bevor Tenant/RBAC gebaut werden. |
-| 3 | **DEV-003** | neu | Erster Domänenschnitt: `organizations`, `organization_memberships`, idempotenter Seeder, UUID-ADR. |
-| 4 | **DEV-004** | neu | Actions/Validierung/Fehlerlayout; `tenant`-Middleware braucht DEV-003. |
+| 2 | **DEV-008** | done | ADRs, DoD, Security-Checkliste, Git-Konvention, Agenten-Block. |
+| 3 | **DEV-003** | done | `organizations` (UUID), Memberships, idempotenter Demo-Seeder, ADR-0001. |
+| 4 | **DEV-004** | done | `tenant`-Middleware, Error/Empty/Loading, Validierungs-/Actions-Konvention. |
 | 5 | **DEV-005** | delta | Shell existiert. EquiFlow-Navigation, Org-Switcher-Platzhalter, `/dev/ui`, Mobile-Nav. |
 | 6 | **DEV-006** | neu | PWA hängt an der Shell. |
 | 7 | **DEV-007** | delta | CI härten (PHP 8.4, Migration, Vite-Build). Braucht DEV-001 und DEV-003. |
@@ -50,12 +50,12 @@ R1 (`CORE-001`) erst, wenn die Tabelle unten durchgängig `done` ist.
 | Ticket | Status | Schon da | Noch zu tun |
 |--------|--------|----------|-------------|
 | DEV-001 | **done** | README/Herd, `.env.example` (SQLite/pgsql, `APP_LOCALE=de`), PHP ^8.4, CI PHP 8.4, `tests/Feature/SmokeTest.php` | — |
-| DEV-003 | offen / neu | `users`, Factories, `DatabaseSeeder` (nur Test-User) | Modelle + Migrationen + Factories; idempotenter Demo-Seed; UUID-ADR |
-| DEV-004 | offen / neu | `app/Actions/Fortify`, `app/Concerns/*ValidationRules`, JSON-API-Exceptions | Trait-Konvention dokumentieren; Error/Empty/Loading; `tenant`-Middleware-Gruppe |
+| DEV-003 | **done** | `organizations` (UUID-PK), `organization_memberships`, Factories, idempotenter Demo-Seeder, [ADR-0001](architecture/adr/0001-uuid-primary-keys.md) | — |
+| DEV-004 | **done** | `tenant`-Gruppe (`EnsureActiveOrganization`), `errors/no-organization`, `<x-ui.*>`, JSON-Handler blieb | — |
 | DEV-005 | offen / delta | Flux-Sidebar, Header, Layouts | Mobile Bottom-Nav; Org-Switcher-Platzhalter; `/dev/ui`; 360px-/Touch-Tests |
 | DEV-006 | offen / neu | Favicons in `partials/head` | Manifest, Service Worker, Offline-Fallback, Theme-Farben |
-| DEV-007 | offen / delta | `.github/workflows/tests.yml` (PHP 8.3, `composer setup` + `ci:check`) | PHP 8.4; expliziter Migrate-Schritt; Vite-Build; ggf. `ci.yml` laut Ticket |
-| DEV-008 | offen / neu | `AGENTS.md` / `CLAUDE.md` (Boost-Standard) | `Docu/architecture/*`, DoD, Security-Checkliste, `.ai/rules/index.md` |
+| DEV-007 | offen / delta | `.github/workflows/tests.yml` (PHP 8.4, `composer setup` + `ci:check`) | Expliziter Migrate-Schritt; Vite-Build; ggf. `ci.yml` laut Ticket |
+| DEV-008 | **done** | `Docu/architecture/*`, EquiFlow-Block in AGENTS/CLAUDE, `.ai/rules/index.md` | — |
 | SEC-001 | offen / delta | Fortify vollständig, Auth-Tests, Session `http_only` + `same_site=lax` | Abgleich Akzeptanzkriterien; Session-Invalidierung nach Logout explizit testen |
 | SEC-002 | offen / delta+neu | Password-Reset + Tests, `MAIL_MAILER=log` | Enumeration-safe prüfen; Token-Modell `expires_at`/`used_at` für Einladungen |
 | SEC-003 | offen / neu | — | ActiveOrganization, Global Scope, IDOR-Tests |
@@ -68,7 +68,7 @@ R1 (`CORE-001`) erst, wenn die Tabelle unten durchgängig `done` ist.
 
 | Entscheidung | Ticket | Hinweis |
 |--------------|--------|---------|
-| UUID vs. Auto-Increment für Fachentitäten | DEV-003 | Als ADR festhalten. User bleibt vorerst Integer (Fortify-Starter). |
+| UUID vs. Auto-Increment für Fachentitäten | DEV-003 | **Entschieden:** UUID-PK (`HasUuids`/UUIDv7) für Fachaggregate. `users` bleibt Integer. Memberships: Integer-PK. Siehe ADR-0001. |
 | PHP 8.4 festziehen (`composer.json` + CI) | DEV-001 | **Entschieden:** `php: ^8.4`, CI `php-version: 8.4`. |
 | UI-Locale Deutsch als Default | DEV-001 | **Entschieden:** `APP_LOCALE=de`, Fallback `en`. Tests erzwingen `en` in `phpunit.xml`. |
 | E-Mail-Verifikation Pflicht für Pilot? | SEC-001 | Feature ist aktiv. Ob unverifizierte User das Dashboard nutzen dürfen, hier entscheiden. |

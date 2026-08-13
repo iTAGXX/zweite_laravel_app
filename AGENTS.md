@@ -1,3 +1,13 @@
+# EquiFlow
+
+Setup: `README.md`. Ticket-Reihenfolge: `Docu/R0_Kickoff.md`. Architektur: `Docu/architecture/overview.md`. DoD: `Docu/architecture/definition-of-done.md`.
+
+- Ein Ticket pro Agent-Task. Keine sachfremden Refactorings.
+- Kein Produktions-Deploy. Security-Änderungen, Migrationen und Production brauchen menschliche Freigabe.
+- Starter-Kit (Fortify, Flux-Shell, CI) nicht neu bauen; nur den Ticket-Delta schließen.
+- Fachdaten ab DEV-003/SEC-003: `organization_id` + Global Scope; sensible Aktionen über Policy/Gate.
+- ADRs nach `Docu/architecture/adr-template.md`. Dauerhafte Regeln per Boost `record-rule`.
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
