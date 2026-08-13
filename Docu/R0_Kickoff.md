@@ -20,7 +20,7 @@ R0 abschließen, bevor R1 (Plattformkern) oder Fachmodule (Verein, Pferdebetrieb
 
 Vorhanden: Laravel 13, PHP ^8.4, Livewire 4, Flux 2, Fortify, Pest, Pint, Larastan Level 7, App-Shell, Smoke-Tests, README/Herd, UI-Locale `de`, `Docu/architecture/*`, EquiFlow-Block in `AGENTS.md`/`CLAUDE.md`.
 
-Fehlt: Tenant-Global-Scope, RBAC, Audit, Einladungen, PWA.
+Fehlt: Tenant-Global-Scope, RBAC, Audit, Einladungen.
 
 ## Empfohlene Reihenfolge
 
@@ -34,8 +34,8 @@ Abweichungen vom Backlog sind Absicht: Doku früh, Tenant-Middleware erst nach O
 | 4 | **DEV-004** | done | `tenant`-Middleware, Error/Empty/Loading, Validierungs-/Actions-Konvention. |
 | 5 | **DEV-005** | done | Shell existiert. EquiFlow-Navigation, Org-Switcher-Platzhalter, `/dev/ui`, Mobile-Nav. |
 | 6 | **DEV-006** | done | PWA hängt an der Shell. |
-| 7 | **DEV-007** | delta | CI härten (PHP 8.4, Migration, Vite-Build). Braucht DEV-001 und DEV-003. |
-| 8 | **SEC-001** | delta | Fortify ist da. Session/Logout/Verifikation gegen Akzeptanzkriterien prüfen. |
+| 7 | **DEV-007** | skipped | CI härten (PHP 8.4, Migration, Vite-Build). Bewusst nicht: Starter-CI (PHP 8.4, `composer setup` + `ci:check`) reicht. |
+| 8 | **SEC-001** | done | Fortify ist da. Session/Logout/Verifikation gegen Akzeptanzkriterien prüfen. |
 | 9 | **SEC-007** | delta | Login-Rate-Limit existiert. Header + 429-Tests nachziehen. Unabhängig von Tenant. |
 | 10 | **SEC-002** | delta+neu | Reset ist da. Einladungs-Token-Modell neu (für SEC-005). |
 | 11 | **SEC-003** | neu | Harte Tenant-Isolation. Kern von R0. |
@@ -43,7 +43,7 @@ Abweichungen vom Backlog sind Absicht: Doku früh, Tenant-Middleware erst nach O
 | 13 | **SEC-005** | neu | Einladungen + Org-Switcher. |
 | 14 | **SEC-006** | neu | Audit-Log. |
 
-R1 (`CORE-001`) erst, wenn die Tabelle unten durchgängig `done` ist.
+R1 (`CORE-001`) erst, wenn die Tabelle unten durchgängig `done` oder bewusst `skipped` ist.
 
 ## Gap-Analyse
 
@@ -54,9 +54,9 @@ R1 (`CORE-001`) erst, wenn die Tabelle unten durchgängig `done` ist.
 | DEV-004 | **done** | `tenant`-Gruppe (`EnsureActiveOrganization`), `errors/no-organization`, `<x-ui.*>`, JSON-Handler blieb | — |
 | DEV-005 | **done** | Flux-Sidebar, Header, Layouts; Livewire-Bottom-Nav (`mobile-navigation`, 44px); Org-Switcher-Platzhalter; `/dev/ui` (local/testing); 360px-/Toggle-Tests | — |
 | DEV-006 | **done** | Manifest-Route `/manifest.webmanifest`, Platzhalter-Icons 192/512, Service Worker `/sw.js` (App-Shell-Cache, keine POST-Writes), Offline-Seite `/offline`, Offline-Hinweis + Livewire-Fehler-Toast, `theme_color`/`background_color` | — |
-| DEV-007 | offen / delta | `.github/workflows/tests.yml` (PHP 8.4, `composer setup` + `ci:check`) | Expliziter Migrate-Schritt; Vite-Build; ggf. `ci.yml` laut Ticket |
+| DEV-007 | **skipped** | `.github/workflows/tests.yml` (PHP 8.4, `composer setup` + `ci:check`) | Bewusst nicht nachgezogen: expliziter Migrate-Schritt, Vite-Build, extra `ci.yml`. |
 | DEV-008 | **done** | `Docu/architecture/*`, EquiFlow-Block in AGENTS/CLAUDE, `.ai/rules/index.md` | — |
-| SEC-001 | offen / delta | Fortify vollständig, Auth-Tests, Session `http_only` + `same_site=lax` | Abgleich Akzeptanzkriterien; Session-Invalidierung nach Logout explizit testen |
+| SEC-001 | **done** | Fortify, `MustVerifyEmail`, `verified` auf Dashboard/Tenant, Session `http_only` + `same_site=lax`, Logout invalidiert Session (Pest) | — |
 | SEC-002 | offen / delta+neu | Password-Reset + Tests, `MAIL_MAILER=log` | Enumeration-safe prüfen; Token-Modell `expires_at`/`used_at` für Einladungen |
 | SEC-003 | offen / neu | — | ActiveOrganization, Global Scope, IDOR-Tests |
 | SEC-004 | offen / neu | — | Role/Permission, Policies, Seeder |
@@ -71,7 +71,7 @@ R1 (`CORE-001`) erst, wenn die Tabelle unten durchgängig `done` ist.
 | UUID vs. Auto-Increment für Fachentitäten | DEV-003 | **Entschieden:** UUID-PK (`HasUuids`/UUIDv7) für Fachaggregate. `users` bleibt Integer. Memberships: Integer-PK. Siehe ADR-0001. |
 | PHP 8.4 festziehen (`composer.json` + CI) | DEV-001 | **Entschieden:** `php: ^8.4`, CI `php-version: 8.4`. |
 | UI-Locale Deutsch als Default | DEV-001 | **Entschieden:** `APP_LOCALE=de`, Fallback `en`. Tests erzwingen `en` in `phpunit.xml`. |
-| E-Mail-Verifikation Pflicht für Pilot? | SEC-001 | Feature ist aktiv. Ob unverifizierte User das Dashboard nutzen dürfen, hier entscheiden. |
+| E-Mail-Verifikation Pflicht für Pilot? | SEC-001 | **Entschieden:** Pflicht. `User` implementiert `MustVerifyEmail`; Dashboard/Tenant hinter `verified`. Siehe [ADR-0002](architecture/adr/0002-email-verification-required.md). |
 | Standardrollen-Namen | SEC-004 | Backlog: admin, treasurer, member, staff. Nicht umbenennen ohne ADR. |
 | Org-Kontext: Session vs. URL | SEC-003 | Kleinste reversible Lösung; als ADR dokumentieren. |
 
@@ -92,7 +92,7 @@ Nach Abschluss in dieser Datei Status auf `done` setzen und in 1–2 Zeilen noti
 
 R0 ist fertig, wenn:
 
-- alle 14 Tickets `done` sind
+- alle 14 Tickets `done` oder bewusst `skipped` sind (DEV-007: skipped)
 - `composer ci:check` grün ist
 - Cross-Tenant-Test (SEC-003) und Permission-Negativtests (SEC-004) grün sind
 - `.ai/rules/index.md` existiert

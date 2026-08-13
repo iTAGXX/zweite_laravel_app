@@ -10,3 +10,6 @@ Every tenant-owned model must have organization_id NOT NULL and a BelongsToOrgan
 
 ## UUID PKs for domain aggregates, integer users
 Domain aggregates (Organization, later people/horses/contracts) use UUID primary keys via HasUuids (UUIDv7). The users table stays integer auto-increment. Join tables such as organization_memberships use an integer PK, a UUID organization_id FK, and an integer user_id FK. See Docu/architecture/adr/0001-uuid-primary-keys.md.
+
+## MustVerifyEmail is required on User
+User implements MustVerifyEmail (ADR-0002). Keep Fortify Features::emailVerification enabled. Do not drop the interface without a new ADR; otherwise verified middleware is a no-op and unverified users reach the dashboard.

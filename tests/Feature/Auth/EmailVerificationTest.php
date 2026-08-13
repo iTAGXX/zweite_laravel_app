@@ -70,3 +70,11 @@ test('already verified user visiting verification link is redirected without fir
     expect($user->fresh()->hasVerifiedEmail())->toBeTrue();
     Event::assertNotDispatched(Verified::class);
 });
+
+test('unverified users cannot visit the dashboard', function () {
+    $user = User::factory()->unverified()->withOrganization()->create();
+
+    $this->actingAs($user)
+        ->get(route('dashboard'))
+        ->assertRedirect(route('verification.notice'));
+});

@@ -17,3 +17,6 @@ Assign the tenant middleware group (EnsureActiveOrganization) to mandantenbezoge
 
 ## PWA manifest is a public JSON route
 Serve the web app manifest at /manifest.webmanifest (pwa.manifest) as a public JSON route. Keep it outside auth/tenant so browsers can install without a session.
+
+## Verified middleware on tenant routes
+Dashboard and tenant routes stay behind auth + verified. settings/profile stays auth-only so unverified users can change email and see the verification notice. Logout must invalidate the session and regenerate the CSRF token (Fortify and Livewire Logout already do this).

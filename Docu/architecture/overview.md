@@ -8,7 +8,7 @@ Kurze Landkarte für Entwickler und Coding-Agents. Ticket-Details stehen im Back
 |---------|------|
 | App | Laravel 13 Monolith, PHP 8.4, `declare(strict_types=1)` |
 | UI | Livewire 4 Single-File-Components, Flux UI 2, Tailwind 4, Vite 8 |
-| Auth | Laravel Fortify (Login, Register, Reset, Verifikation, 2FA, Passkeys) |
+| Auth | Laravel Fortify (Login, Register, Reset, Verifikation, 2FA, Passkeys). E-Mail-Verifikation Pflicht ([ADR-0002](adr/0002-email-verification-required.md)). |
 | Daten | SQLite lokal und in Tests; PostgreSQL auf Laravel Cloud. Fachaggregate: UUID-PK ([ADR-0001](adr/0001-uuid-primary-keys.md)); `users` bleibt Integer. |
 | Qualität | Pint, Larastan Level 7, Pest; Einstieg `composer ci:check` |
 | Lokal | Laravel Herd (`.test`-Domain). Setup: [`README.md`](../../README.md) |
@@ -26,7 +26,7 @@ Kurze Landkarte für Entwickler und Coding-Agents. Ticket-Details stehen im Back
 - Fachlogik in `app/Actions`. Neue Actions: eine Klasse, Methode `handle()`. Fortify-Actions behalten die Vertragsmethoden (`create`, …).
 - Livewire-Validierung: Traits in `app/Concerns` (Muster: `ProfileValidationRules`). Feldfehler über `<flux:input>` / `<flux:field>`; Formularzusammenfassung: `<x-ui.form-errors />`.
 - Leer-/Fehler-/Ladezustände: `<x-ui.empty-state>`, `<x-ui.error-state>`, `<x-ui.loading-state>`.
-- Autorisierung: Gäste → Login. Authentifiziert ohne Recht → 403. Ohne Organisation auf `tenant`-Routen → `errors/no-organization` (403).
+- Autorisierung: Gäste → Login. Unverifiziert → `verification.notice`. Authentifiziert ohne Recht → 403. Ohne Organisation auf `tenant`-Routen → `errors/no-organization` (403).
 - JSON-Fehler für `api/*` und `expectsJson()` in `bootstrap/app.php` (schon konfiguriert).
 - Livewire-first: keine allgemeine REST-API im MVP. Nur punktuelle Controller (Webhooks, Health `/up`, öffentliche Anmeldung später).
 - Routen: `routes/web.php` plus bereichsspezifische Dateien (`routes/settings.php`). Mandanten-Routen: Middleware-Gruppe `tenant` (`EnsureActiveOrganization`, Session-Key `active_organization_id`). Session vs. URL entscheidet SEC-003.
