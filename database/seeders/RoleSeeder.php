@@ -16,7 +16,7 @@ class RoleSeeder extends Seeder
      * @var array<string, list<PermissionName>>
      */
     private const array MATRIX = [
-        RoleName::Admin->value => [PermissionName::UsersManage, PermissionName::FinanceView, PermissionName::AuditView],
+        RoleName::Admin->value => [PermissionName::UsersManage, PermissionName::FinanceView, PermissionName::AuditView, PermissionName::PeopleManage],
         RoleName::Treasurer->value => [PermissionName::FinanceView],
         RoleName::Member->value => [],
         RoleName::Staff->value => [],

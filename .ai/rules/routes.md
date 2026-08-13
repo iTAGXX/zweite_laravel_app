@@ -26,3 +26,6 @@ CSRF stays on via PreventRequestForgery for the web group. Livewire sends the to
 
 ## Module routes require EnsureModuleEnabled
 Fachmodule (members=club, stable=stable) must use the module middleware alias (module:club / module:stable) in addition to any Gate. Hiding a nav item is UX only; a disabled module route must 403. Finance stays Gate-only (finance.view), not a type module.
+
+## People routes use people.manage
+Person CRUD is Livewire pages at /people, /people/create, /people/{person}/edit behind auth+verified+tenant and can:people.manage. People is platform core, not a club/stable module flag.

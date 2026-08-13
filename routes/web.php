@@ -24,6 +24,11 @@ Route::middleware('auth')->get('invitations/{invitation}/{token}', AcceptInvitat
 
 Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::middleware('can:'.PermissionName::PeopleManage->value)->group(function () {
+        Route::livewire('people', 'pages::people.index')->name('people.index');
+        Route::livewire('people/create', 'pages::people.create')->name('people.create');
+        Route::livewire('people/{person}/edit', 'pages::people.edit')->name('people.edit');
+    });
     Route::view('finance', 'finance')
         ->middleware('can:'.PermissionName::FinanceView->value)
         ->name('finance');

@@ -9,4 +9,5 @@ enum PermissionName: string
     case UsersManage = 'users.manage';
     case FinanceView = 'finance.view';
     case AuditView = 'audit.view';
+    case PeopleManage = 'people.manage';
 }

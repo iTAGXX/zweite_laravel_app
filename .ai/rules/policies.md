@@ -13,3 +13,6 @@ AuditLogPolicy: view/viewAny require audit.view (admin). create/update/delete/re
 
 ## Org settings only for active tenant
 OrganizationPolicy update/view allow only users.manage and only when the target Organization is the active session org (EnsureActiveOrganization::id()). Never accept another tenant's organization id for settings writes.
+
+## PersonPolicy archives instead of deleting
+PersonPolicy uses people.manage for viewAny/view/create/update/archive/unarchive. delete, restore, and forceDelete stay false; archive via archived_at, no hard delete in CORE-002.

@@ -19,9 +19,9 @@ R1 schließt den Plattformkern, bevor R2 (Verein) oder R3 (Pferdebetrieb) beginn
 
 ## Ist-Stand (Repo)
 
-Vorhanden: R0 komplett (Tenant-Session [ADR-0003](architecture/adr/0003-organization-context-session.md), `BelongsToOrganization`, RBAC [ADR-0004](architecture/adr/0004-custom-rbac.md), Audit [ADR-0005](architecture/adr/0005-immutable-audit-log.md), Fortify, PWA, Flux-Shell). `organizations` (UUID, `name`/`slug`, `type`, `enabled_modules`). Org-Settings. User-Settings (Profil/Sicherheit/Erscheinung). Nav-Items hinter Gates und Modul-Flags. Placeholder `/members` `/finance` `/stable`. Storage-Disks `local`/`s3` in `config/filesystems.php`.
+Vorhanden: R0 komplett (Tenant-Session [ADR-0003](architecture/adr/0003-organization-context-session.md), `BelongsToOrganization`, RBAC [ADR-0004](architecture/adr/0004-custom-rbac.md), Audit [ADR-0005](architecture/adr/0005-immutable-audit-log.md), Fortify, PWA, Flux-Shell). `organizations` (UUID, `name`/`slug`, `type`, `enabled_modules`). Org-Settings. User-Settings (Profil/Sicherheit/Erscheinung). Nav-Items hinter Gates und Modul-Flags. Placeholder `/members` `/finance` `/stable`. Storage-Disks `local`/`s3` in `config/filesystems.php`. `people` (UUID, Kontaktfelder, optionales `user_id`, `archived_at`, [ADR-0007](architecture/adr/0007-person-aggregate-and-archive.md)).
 
-Fehlt: `Person`, `Task`, Recurrence, `Document`.
+Fehlt: `Task`, Recurrence, `Document`.
 
 ## Empfohlene Reihenfolge
 
@@ -30,7 +30,7 @@ Abweichungen vom Backlog sind Absicht: Stufe-A-P0 zuerst; CORE-006/007 bewusst s
 | # | Ticket | Art | Warum jetzt |
 |---|--------|-----|-------------|
 | 1 | **CORE-001** | done | Org-Typ + Feature Flags. Blockt Navigation und jedes Fachmodul. |
-| 2 | **CORE-002** | open | Personenstamm. Blockt Aufgaben, Dokumente, später CLUB/EQ. |
+| 2 | **CORE-002** | done | Personenstamm. Blockt Aufgaben, Dokumente, später CLUB/EQ. |
 | 3 | **CORE-003** | open | Aufgaben. Nach CORE-002 unabhängig von Dokumenten. |
 | 4 | **CORE-005** | open | Storage/Dokumente. Nach CORE-002 unabhängig von Aufgaben. Parallel zu CORE-003 erlaubt. |
 | 5 | **CORE-004** | open | Recurrence. Erst wenn Tasks stehen. |
@@ -44,7 +44,7 @@ R2 (`CLUB-001`) erst, wenn die Tabelle unten durchgängig `done` oder bewusst `s
 | Ticket | Status | Schon da | Noch zu tun |
 |--------|--------|----------|-------------|
 | CORE-001 | **done** | `OrganizationType` + `enabled_modules` JSON auf `organizations` ([ADR-0006](architecture/adr/0006-organization-type-and-module-flags.md)); Admin-UI `/settings/organization`; Nav/Routen folgen Flags (`module:club`/`module:stable`); Änderungen nur aktiver Mandant | — |
-| CORE-002 | **open** | `User` (Login, Integer-PK); UUID-Konvention [ADR-0001](architecture/adr/0001-uuid-primary-keys.md); `BelongsToOrganization` | `Person`-CRUD (Kontaktfelder, Archiv, Suche/Filter); optionale Bindung an `User`; eine Person, mehrere spätere Profile (Member/Customer); Tenant-Isolation + Cross-Tenant-Test |
+| CORE-002 | **done** | `Person` UUID-Fachaggregat, `BelongsToOrganization`, Kontaktfelder, optionales `user_id`, `archived_at` (kein SoftDeletes) ([ADR-0007](architecture/adr/0007-person-aggregate-and-archive.md)); CRUD `/people` hinter `people.manage`; Standardliste ohne Archivierte; Cross-Tenant 404 | — |
 | CORE-003 | **open** | Shell, Actions-Konvention, Empty/Error/Loading | `Task`-CRUD; assignee, due date, priority/status; Filter; mobile Quick-Create (max. 3 Schritte); generische Objekt-Links ohne Fachmodelle vorwegzunehmen |
 | CORE-004 | **open** | `routes/console.php` (Scheduler-Einstieg) | Recurrence-Subset (monatlich/jährlich); Job mit Idempotenzschlüssel; next occurrence; pause/end; kein Doppel-Erzeugen bei erneutem Lauf |
 | CORE-005 | **open** | `config/filesystems.php` (`local` + `s3`); DB speichert keine Binärdateien (Leitplanke) | `Document`/`DocumentVersion`; zufällige Keys; MIME-/Größen-Whitelist; Signed Temporary URLs; Upload/Download/Delete; Cross-Tenant → 403 |
@@ -58,8 +58,8 @@ R2 (`CLUB-001`) erst, wenn die Tabelle unten durchgängig `done` oder bewusst `s
 | Org-Typ speichern | CORE-001 | Erledigt: PHP-Enum-Cast `OrganizationType` auf `organizations.type` ([ADR-0006](architecture/adr/0006-organization-type-and-module-flags.md)). |
 | Feature Flags speichern | CORE-001 | Erledigt: JSON `enabled_modules` auf `organizations` (`AsEnumCollection` von `ModuleName`). |
 | Deaktiviertes Modul „API“ | CORE-001 | Erledigt: Middleware `module:club`/`module:stable` liefert 403; Nav blendet nur aus. |
-| Person vs. User | CORE-002 | `User` bleibt Login-Identität (Integer). `Person` ist Fachaggregat (UUID). Verknüpfung optional, keine Pflicht-1:1. |
-| Archivierung | CORE-002 | `archived_at` vs. SoftDeletes. Standardliste blendet archivierte aus. |
+| Person vs. User | CORE-002 | Erledigt: `User` bleibt Login (Integer). `Person` ist Fachaggregat (UUID), optionales `user_id`, keine Pflicht-1:1 ([ADR-0007](architecture/adr/0007-person-aggregate-and-archive.md)). |
+| Archivierung | CORE-002 | Erledigt: `archived_at` statt SoftDeletes. Standardliste blendet archivierte aus. |
 | Task-Verknüpfungen | CORE-003 | Noch keine Pferde/Sitzungen. Nur generischen, sicheren Link-Ansatz vorbereiten — keine Fake-Fachmodelle. |
 | Recurrence-Format | CORE-004 | Eigenes Regel-Subset (monatlich/jährlich) statt voller iCal-RRULE, solange der Bedarf so klein ist. |
 | Document-Disk | CORE-005 | Default `local` in Dev/Tests, `s3` über Env in Cloud. Kein Public-Pfad, keine ausführbaren Downloads. |

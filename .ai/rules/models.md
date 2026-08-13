@@ -31,3 +31,6 @@ AuditLog is a UUID tenant model with BelongsToOrganization. organization_id is n
 
 ## Org type enum and JSON module flags
 Organization stores type as OrganizationType enum and enabled_modules as JSON (AsEnumCollection of ModuleName: club, stable). Mixed default is both modules. Do not add a feature_flags table; defaults live on OrganizationType::defaultModules(). hasModule() is the only check for whether a Fachmodul is on.
+
+## Person is shared identity with archived_at
+Person is a UUID tenant aggregate with BelongsToOrganization, optional user_id (unique per org, not required 1:1), and archived_at instead of SoftDeletes. Do not add a type/role column; Member/Customer attach later via person_id. Default lists use notArchived/archivedStatus; archived rows stay reachable for edit/unarchive. Cross-tenant IDs are 404.

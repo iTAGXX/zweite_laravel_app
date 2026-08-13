@@ -26,7 +26,7 @@ Kurze Landkarte für Entwickler und Coding-Agents. Ticket-Details stehen im Back
 - Fachlogik in `app/Actions`. Neue Actions: eine Klasse, Methode `handle()`. Fortify-Actions behalten die Vertragsmethoden (`create`, …).
 - Livewire-Validierung: Traits in `app/Concerns` (Muster: `ProfileValidationRules`). Feldfehler über `<flux:input>` / `<flux:field>`; Formularzusammenfassung: `<x-ui.form-errors />`.
 - Leer-/Fehler-/Ladezustände: `<x-ui.empty-state>`, `<x-ui.error-state>`, `<x-ui.loading-state>`.
-- Autorisierung: Gäste → Login. Unverifiziert → `verification.notice`. Authentifiziert ohne Recht → 403. Ohne Organisation auf `tenant`-Routen → `errors/no-organization` (403). Rollen über `organization_memberships.role_id`; Permissions als Gates (`users.manage`, `finance.view`, `audit.view`). UI-`@can` ist nur UX ([ADR-0004](adr/0004-custom-rbac.md)).
+- Autorisierung: Gäste → Login. Unverifiziert → `verification.notice`. Authentifiziert ohne Recht → 403. Ohne Organisation auf `tenant`-Routen → `errors/no-organization` (403). Rollen über `organization_memberships.role_id`; Permissions als Gates (`users.manage`, `finance.view`, `audit.view`, `people.manage`). UI-`@can` ist nur UX ([ADR-0004](adr/0004-custom-rbac.md)).
 - Audit: unveränderbare `audit_logs` über `AuditLogger` + Observer/Login-Listener; Metadata-Allowlist, keine Passwörter/Tokens/IBAN-Vollwerte ([ADR-0005](adr/0005-immutable-audit-log.md)). Admin-Ansicht `/audit`.
 - JSON-Fehler für `api/*` und `expectsJson()` in `bootstrap/app.php` (schon konfiguriert).
 - Livewire-first: keine allgemeine REST-API im MVP. Nur punktuelle Controller (Webhooks, Health `/up`, öffentliche Anmeldung später).
@@ -45,6 +45,8 @@ Kurze Landkarte für Entwickler und Coding-Agents. Ticket-Details stehen im Back
 ## Mandanten (ab DEV-003 / SEC-003)
 
 `EnsureActiveOrganization` setzt die aktive Organisation in Session und `Context` ([ADR-0003](adr/0003-organization-context-session.md)). Jede Fachentität trägt `organization_id` und den Eloquent Global Scope `BelongsToOrganization`. Cross-Tenant-Zugriff liefert 404 ohne Datenleck. UI-Ausblenden ersetzt keine serverseitige Prüfung. `organization_memberships` bleibt ohne diesen Scope (Join-Tabelle).
+
+`Person` ist das zentrale Personenaggregat (UUID, optionales `user_id`, Archiv über `archived_at`, [ADR-0007](adr/0007-person-aggregate-and-archive.md)). Member-/Customer-Profile kommen später und zeigen auf dieselbe Person.
 
 Organisationstyp (`OrganizationType`) und Modul-Flags (`enabled_modules` JSON) liegen auf `organizations` ([ADR-0006](adr/0006-organization-type-and-module-flags.md)). Deaktivierte Module fehlen in der Nav und liefern 403 auf der Route. Org-Settings ändern nur den aktiven Mandanten (`OrganizationPolicy`, `users.manage`).
 
