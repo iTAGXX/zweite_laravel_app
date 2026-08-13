@@ -10,7 +10,7 @@ beforeEach(function (): void {
     $this->seed(RoleSeeder::class);
 });
 
-test('staff cannot open finance or members', function () {
+test('staff cannot open finance, members, or audit', function () {
     $user = User::factory()->withOrganization(RoleName::Staff)->create();
 
     $this->actingAs($user)
@@ -20,6 +20,10 @@ test('staff cannot open finance or members', function () {
 
     $this->actingAs($user)
         ->get(route('members'))
+        ->assertForbidden();
+
+    $this->actingAs($user)
+        ->get(route('audit'))
         ->assertForbidden();
 });
 
@@ -34,9 +38,13 @@ test('treasurer can open finance but not members', function () {
     $this->actingAs($user)
         ->get(route('members'))
         ->assertForbidden();
+
+    $this->actingAs($user)
+        ->get(route('audit'))
+        ->assertForbidden();
 });
 
-test('admin can open finance and members', function () {
+test('admin can open finance, members, and audit', function () {
     $user = User::factory()->withOrganization(RoleName::Admin)->create();
 
     $this->actingAs($user)
@@ -45,6 +53,10 @@ test('admin can open finance and members', function () {
 
     $this->actingAs($user)
         ->get(route('members'))
+        ->assertOk();
+
+    $this->actingAs($user)
+        ->get(route('audit'))
         ->assertOk();
 });
 
@@ -56,7 +68,8 @@ test('staff does not see finance or members in the sidebar', function () {
         ->assertOk()
         ->assertDontSee(__('Finance'), false)
         ->assertDontSee(route('finance'), false)
-        ->assertDontSee(route('members'), false);
+        ->assertDontSee(route('members'), false)
+        ->assertDontSee(route('audit'), false);
 });
 
 test('treasurer sees finance but not members in the sidebar', function () {

@@ -27,5 +27,8 @@
     "Accept invitation": "Einladung annehmen",
     "If you did not expect this invitation, you can ignore this email.": "Wenn du diese Einladung nicht erwartet hast, kannst du diese E-Mail ignorieren.",
     "This invitation is invalid or has expired.": "Diese Einladung ist ungültig oder abgelaufen.",
-    "Expires :date": "Läuft ab am :date"
+    "Expires :date": "Läuft ab am :date",
+    "Audit log": "Prüfprotokoll",
+    "Audit events will appear here.": "Prüfereignisse erscheinen hier.",
+    "System": "System"
 }

@@ -31,6 +31,11 @@
                             {{ __('Members') }}
                         </flux:sidebar.item>
                     @endcan
+                    @can(\App\Enums\PermissionName::AuditView->value)
+                        <flux:sidebar.item icon="clipboard-document-list" :href="route('audit')" :current="request()->routeIs('audit')" wire:navigate>
+                            {{ __('Audit log') }}
+                        </flux:sidebar.item>
+                    @endcan
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 

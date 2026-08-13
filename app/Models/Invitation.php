@@ -7,9 +7,11 @@ namespace App\Models;
 use App\Models\Concerns\BelongsToOrganization;
 use App\Models\Concerns\HasExpirableToken;
 use App\Models\Scopes\BelongsToOrganizationScope;
+use App\Observers\AuditsModelWrites;
 use Database\Factories\InvitationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,6 +31,7 @@ use Illuminate\Support\Carbon;
  */
 #[Fillable(['organization_id', 'role_id', 'email', 'token', 'expires_at', 'used_at'])]
 #[Hidden(['token'])]
+#[ObservedBy([AuditsModelWrites::class])]
 class Invitation extends Model
 {
     /** @use HasFactory<InvitationFactory> */

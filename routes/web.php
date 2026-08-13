@@ -29,6 +29,9 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
     Route::view('members', 'members')
         ->middleware('can:'.PermissionName::UsersManage->value)
         ->name('members');
+    Route::view('audit', 'audit')
+        ->middleware('can:'.PermissionName::AuditView->value)
+        ->name('audit');
 
     if (app()->environment(['local', 'testing'])) {
         Route::view('dev/ui', 'dev.ui')->name('dev.ui');

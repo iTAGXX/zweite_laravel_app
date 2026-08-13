@@ -13,3 +13,6 @@ Reuse x-ui.empty-state, x-ui.error-state, and x-ui.loading-state. Touch-targets 
 
 ## Member invites go through Livewire members
 Invite members with livewire:invite-members on the members page. @can remains UX only; sendInvitation authorizes InvitationPolicy create. Empty pending list uses x-ui.empty-state.
+
+## Audit Livewire component is audit-log
+The audit admin page is resources/views/audit.blade.php wrapping livewire:audit-log. Do not name the Livewire component audit; that collides with the page view (same trap as members vs invite-members).
