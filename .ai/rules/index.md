@@ -15,6 +15,7 @@ Before planning or editing, find the row whose globs match the file's path and r
 | app/Http/Middleware/*.php | .ai/rules/middleware.md |
 | app/Models/*.php | .ai/rules/models.md |
 | resources/views/partials/head.blade.php | .ai/rules/partials.md |
+| app/Policies/*.php | .ai/rules/policies.md |
 | app/Providers/*.php | .ai/rules/providers.md |
 | public/sw.js | .ai/rules/public.md |
 | routes/**, routes/web.php | .ai/rules/routes.md |

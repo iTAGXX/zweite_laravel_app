@@ -9,5 +9,9 @@
     "Forbidden": "Zugriff verweigert",
     "You are not allowed to perform this action.": "Du darfst diese Aktion nicht ausführen.",
     "Nothing to show yet.": "Noch nichts vorhanden.",
-    "Please fix the highlighted errors.": "Bitte die markierten Fehler korrigieren."
+    "Please fix the highlighted errors.": "Bitte die markierten Fehler korrigieren.",
+    "Finance": "Finanzen",
+    "Finance modules will appear here.": "Finanzmodule erscheinen hier.",
+    "Members": "Mitglieder",
+    "Member management will appear here.": "Die Mitgliederverwaltung erscheint hier."
 }

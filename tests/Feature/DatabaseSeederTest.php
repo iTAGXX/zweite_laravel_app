@@ -34,6 +34,13 @@ test('database seeder creates a demo organization and admin membership', functio
     $this->assertModelExists($organization);
 
     expect(OrganizationMembership::query()->where('user_id', $user->id)->where('organization_id', $organization->id)->count())->toBe(1);
+
+    $membership = OrganizationMembership::query()
+        ->where('user_id', $user->id)
+        ->where('organization_id', $organization->id)
+        ->firstOrFail();
+
+    expect($membership->role?->slug)->toBe('admin');
 });
 
 test('database seeder is idempotent', function () {

@@ -19,3 +19,6 @@ Invitation is a UUID domain aggregate with organization_id NOT NULL, hashed toke
 
 ## BelongsToOrganization is required on tenant models
 Tenant-owned models (not Organization, User, or join tables like organization_memberships) must use the BelongsToOrganization trait. Missing context yields no rows. Cross-tenant IDs are 404, never 200 with a different error.
+
+## Permissions come from membership role
+RBAC is a global role catalog (admin, treasurer, member, staff) plus permission slugs. Membership.role_id in the active organization is the source of rights. Role/Permission are not tenant-scoped. User::hasPermission() is deny-by-default when context or role is missing.

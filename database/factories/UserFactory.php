@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\RoleName;
 use App\Models\OrganizationMembership;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -50,10 +51,16 @@ class UserFactory extends Factory
     /**
      * Indicate that the user belongs to an organization.
      */
-    public function withOrganization(): static
+    public function withOrganization(?RoleName $role = null): static
     {
-        return $this->afterCreating(function (User $user): void {
-            OrganizationMembership::factory()->for($user)->create();
+        return $this->afterCreating(function (User $user) use ($role): void {
+            $membership = OrganizationMembership::factory()->for($user);
+
+            if ($role instanceof RoleName) {
+                $membership = $membership->forRole($role);
+            }
+
+            $membership->create();
         });
     }
 

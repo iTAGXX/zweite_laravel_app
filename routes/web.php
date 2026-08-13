@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PermissionName;
 use App\Http\Controllers\WebAppManifestController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -18,6 +19,12 @@ Route::get('/sw.js', function (): BinaryFileResponse {
 
 Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::view('finance', 'finance')
+        ->middleware('can:'.PermissionName::FinanceView->value)
+        ->name('finance');
+    Route::view('members', 'members')
+        ->middleware('can:'.PermissionName::UsersManage->value)
+        ->name('members');
 
     if (app()->environment(['local', 'testing'])) {
         Route::view('dev/ui', 'dev.ui')->name('dev.ui');

@@ -20,7 +20,7 @@ R0 abschließen, bevor R1 (Plattformkern) oder Fachmodule (Verein, Pferdebetrieb
 
 Vorhanden: Laravel 13, PHP ^8.4, Livewire 4, Flux 2, Fortify, Pest, Pint, Larastan Level 7, App-Shell, Smoke-Tests, README/Herd, UI-Locale `de`, `Docu/architecture/*`, EquiFlow-Block in `AGENTS.md`/`CLAUDE.md`.
 
-Fehlt: RBAC, Audit, Einladungs-Flow.
+Fehlt: Audit, Einladungs-Flow.
 
 ## Empfohlene Reihenfolge
 
@@ -39,7 +39,7 @@ Abweichungen vom Backlog sind Absicht: Doku früh, Tenant-Middleware erst nach O
 | 9 | **SEC-007** | done | Login-Rate-Limit existiert. Header + 429-Tests nachziehen. Unabhängig von Tenant. |
 | 10 | **SEC-002** | done | Reset ist da. Einladungs-Token-Modell neu (für SEC-005). |
 | 11 | **SEC-003** | done | Harte Tenant-Isolation. Kern von R0. |
-| 12 | **SEC-004** | neu | RBAC, Policies, Standardrollen. |
+| 12 | **SEC-004** | done | RBAC, Policies, Standardrollen. |
 | 13 | **SEC-005** | neu | Einladungen + Org-Switcher. |
 | 14 | **SEC-006** | neu | Audit-Log. |
 
@@ -59,7 +59,7 @@ R1 (`CORE-001`) erst, wenn die Tabelle unten durchgängig `done` oder bewusst `s
 | SEC-001 | **done** | Fortify, `MustVerifyEmail`, `verified` auf Dashboard/Tenant, Session `http_only` + `same_site=lax`, Logout invalidiert Session (Pest) | — |
 | SEC-002 | **done** | Fortify-Reset, `MAIL_MAILER=log`, enumeration-safe Link-Request, `invitations` (`expires_at`/`used_at`, gehasht) | — |
 | SEC-003 | **done** | Session-Kontext [ADR-0003](architecture/adr/0003-organization-context-session.md), `BelongsToOrganization` auf `Invitation`, IDOR → 404 | — |
-| SEC-004 | offen / neu | — | Role/Permission, Policies, Seeder |
+| SEC-004 | **done** | Eigenes RBAC [ADR-0004](architecture/adr/0004-custom-rbac.md), Rollen admin/treasurer/member/staff, Gates `users.manage`/`finance.view`, InvitationPolicy, 403 ohne Permission | — |
 | SEC-005 | offen / neu | — | Invitation-Flow, Org-Switcher |
 | SEC-006 | offen / neu | — | AuditLog, Observer, Allowlist, Admin-Ansicht |
 | SEC-007 | **done** | Login-RateLimiter (5/min); globale `SecurityHeaders`; CSRF in Security-Checkliste; 429- und Header-Tests | — |
@@ -72,7 +72,7 @@ R1 (`CORE-001`) erst, wenn die Tabelle unten durchgängig `done` oder bewusst `s
 | PHP 8.4 festziehen (`composer.json` + CI) | DEV-001 | **Entschieden:** `php: ^8.4`, CI `php-version: 8.4`. |
 | UI-Locale Deutsch als Default | DEV-001 | **Entschieden:** `APP_LOCALE=de`, Fallback `en`. Tests erzwingen `en` in `phpunit.xml`. |
 | E-Mail-Verifikation Pflicht für Pilot? | SEC-001 | **Entschieden:** Pflicht. `User` implementiert `MustVerifyEmail`; Dashboard/Tenant hinter `verified`. Siehe [ADR-0002](architecture/adr/0002-email-verification-required.md). |
-| Standardrollen-Namen | SEC-004 | Backlog: admin, treasurer, member, staff. Nicht umbenennen ohne ADR. |
+| Standardrollen-Namen | SEC-004 | **Entschieden:** admin, treasurer, member, staff. Eigenes Katalog-RBAC, nicht Spatie. Siehe [ADR-0004](architecture/adr/0004-custom-rbac.md). |
 | Org-Kontext: Session vs. URL | SEC-003 | **Entschieden:** Session (`active_organization_id`) plus `Context`. Siehe [ADR-0003](architecture/adr/0003-organization-context-session.md). |
 
 Nicht in R0 entscheiden: Payment-Provider, Newsletter, Health Scores, konkrete Fremdsoftware-Connectoren.

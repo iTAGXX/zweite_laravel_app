@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\PermissionName;
+use App\Http\Middleware\EnsureActiveOrganization;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -67,6 +70,24 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     {
         return $this->belongsToMany(Organization::class, 'organization_memberships')
             ->withTimestamps();
+    }
+
+    public function hasPermission(PermissionName|string $permission): bool
+    {
+        $organizationId = EnsureActiveOrganization::id();
+
+        if ($organizationId === null) {
+            return false;
+        }
+
+        $slug = $permission instanceof PermissionName ? $permission->value : $permission;
+
+        return $this->memberships()
+            ->where('organization_id', $organizationId)
+            ->whereHas('role.permissions', function (Builder $query) use ($slug): void {
+                $query->where('slug', $slug);
+            })
+            ->exists();
     }
 
     /**

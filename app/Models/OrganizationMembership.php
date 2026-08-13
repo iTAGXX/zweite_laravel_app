@@ -15,10 +15,11 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string $organization_id
  * @property int $user_id
+ * @property int|null $role_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['organization_id', 'user_id'])]
+#[Fillable(['organization_id', 'user_id', 'role_id'])]
 class OrganizationMembership extends Model
 {
     /** @use HasFactory<OrganizationMembershipFactory> */
@@ -38,5 +39,13 @@ class OrganizationMembership extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return BelongsTo<Role, $this>
+     */
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
     }
 }

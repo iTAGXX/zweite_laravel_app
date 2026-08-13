@@ -21,6 +21,16 @@
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
+                    @can(\App\Enums\PermissionName::FinanceView->value)
+                        <flux:sidebar.item icon="banknotes" :href="route('finance')" :current="request()->routeIs('finance')" wire:navigate>
+                            {{ __('Finance') }}
+                        </flux:sidebar.item>
+                    @endcan
+                    @can(\App\Enums\PermissionName::UsersManage->value)
+                        <flux:sidebar.item icon="users" :href="route('members')" :current="request()->routeIs('members')" wire:navigate>
+                            {{ __('Members') }}
+                        </flux:sidebar.item>
+                    @endcan
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
