@@ -20,3 +20,6 @@ Serve the web app manifest at /manifest.webmanifest (pwa.manifest) as a public J
 
 ## Verified middleware on tenant routes
 Dashboard and tenant routes stay behind auth + verified. settings/profile stays auth-only so unverified users can change email and see the verification notice. Logout must invalidate the session and regenerate the CSRF token (Fortify and Livewire Logout already do this).
+
+## CSRF stays on for web writes
+CSRF stays on via PreventRequestForgery for the web group. Livewire sends the token. Extra AJAX must send X-CSRF-TOKEN or X-XSRF-TOKEN. Webhooks go outside web or use preventRequestForgery(except:) plus a signature check. Login remains Fortify RateLimiter login at 5/min.

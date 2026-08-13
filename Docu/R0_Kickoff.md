@@ -36,7 +36,7 @@ Abweichungen vom Backlog sind Absicht: Doku früh, Tenant-Middleware erst nach O
 | 6 | **DEV-006** | done | PWA hängt an der Shell. |
 | 7 | **DEV-007** | skipped | CI härten (PHP 8.4, Migration, Vite-Build). Bewusst nicht: Starter-CI (PHP 8.4, `composer setup` + `ci:check`) reicht. |
 | 8 | **SEC-001** | done | Fortify ist da. Session/Logout/Verifikation gegen Akzeptanzkriterien prüfen. |
-| 9 | **SEC-007** | delta | Login-Rate-Limit existiert. Header + 429-Tests nachziehen. Unabhängig von Tenant. |
+| 9 | **SEC-007** | done | Login-Rate-Limit existiert. Header + 429-Tests nachziehen. Unabhängig von Tenant. |
 | 10 | **SEC-002** | delta+neu | Reset ist da. Einladungs-Token-Modell neu (für SEC-005). |
 | 11 | **SEC-003** | neu | Harte Tenant-Isolation. Kern von R0. |
 | 12 | **SEC-004** | neu | RBAC, Policies, Standardrollen. |
@@ -62,7 +62,7 @@ R1 (`CORE-001`) erst, wenn die Tabelle unten durchgängig `done` oder bewusst `s
 | SEC-004 | offen / neu | — | Role/Permission, Policies, Seeder |
 | SEC-005 | offen / neu | — | Invitation-Flow, Org-Switcher |
 | SEC-006 | offen / neu | — | AuditLog, Observer, Allowlist, Admin-Ansicht |
-| SEC-007 | offen / delta | Login-RateLimiter (5/min) in `FortifyServiceProvider` | Security-Header-Middleware; 429- und Header-Tests |
+| SEC-007 | **done** | Login-RateLimiter (5/min); globale `SecurityHeaders`; CSRF in Security-Checkliste; 429- und Header-Tests | — |
 
 ## Offene Entscheidungen (in den genannten Tickets treffen, nicht vorher)
 

@@ -23,7 +23,8 @@ Vor jedem Ticket-Abschluss prüfen. Punkte, die das Ticket nicht berührt, kurz 
 ## Session, CSRF, Input
 
 - [ ] Auth bleibt Fortify. Keine eigenen Login-/Reset-Flows.
-- [ ] State-Änderungen über Web/Livewire (CSRF aktiv). Keine neue REST-Schreib-API ohne Ticket.
+- [ ] State-Änderungen über Web/Livewire. CSRF ist aktiv (`PreventRequestForgery` auf der `web`-Gruppe). Livewire sendet das Token automatisch. Zusätzliche AJAX-Calls: Header `X-CSRF-TOKEN` (aus `csrf_token()`) oder `X-XSRF-TOKEN` (Cookie `XSRF-TOKEN`). Webhooks nicht in `web` legen oder per `preventRequestForgery(except:)` ausnehmen und per Signatur prüfen — CSRF nie pauschal abschalten.
+- [ ] Request-Body-Limits gehören in Webserver/PHP (`client_max_body_size`, `post_max_size`, `upload_max_filesize`), nicht in App-Code. Herd- und Cloud-Defaults reichen für R0; bei großen Uploads (CORE-005) explizit setzen.
 - [ ] Uploads nur über `Storage`; die DB speichert Metadaten.
 
 ## Deploy
