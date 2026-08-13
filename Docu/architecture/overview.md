@@ -34,7 +34,9 @@ Kurze Landkarte für Entwickler und Coding-Agents. Ticket-Details stehen im Back
 ## Frontend
 
 - Seiten: `resources/views/pages/**/⚡name.blade.php`
-- Layouts: `resources/views/layouts/`
+- Layouts: `resources/views/layouts/` (Desktop: Flux-Sidebar; Mobil: Livewire-Bottom-Nav `mobile-navigation`, Touch-Targets `min-h-11`)
+- Org-Switcher: Platzhalter `x-organization-switcher-placeholder` bis SEC-005
+- Flux-Bausteine: `/dev/ui` nur in `local`/`testing`
 - UI-Texte über `__()` / Sprachdateien. Default-Locale `de`, Fallback `en`. Tests: `APP_LOCALE=en` in `phpunit.xml`.
 
 ## Mandanten (ab DEV-003 / SEC-003)

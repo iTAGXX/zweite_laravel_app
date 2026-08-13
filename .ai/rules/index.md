@@ -8,6 +8,7 @@ Before planning or editing, find the row whose globs match the file's path and r
 | app/**/*.php | .ai/rules/app.md |
 | Docu/architecture/** | .ai/rules/architecture.md |
 | composer.json, .env.example, phpstan.neon | .ai/rules/general.md |
+| resources/views/layouts/**/*.blade.php | .ai/rules/layouts.md |
 | app/Models/*.php | .ai/rules/models.md |
 | routes/** | .ai/rules/routes.md |
 | resources/views/**/*.blade.php | .ai/rules/views.md |

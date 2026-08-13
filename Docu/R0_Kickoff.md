@@ -32,7 +32,7 @@ Abweichungen vom Backlog sind Absicht: Doku früh, Tenant-Middleware erst nach O
 | 2 | **DEV-008** | done | ADRs, DoD, Security-Checkliste, Git-Konvention, Agenten-Block. |
 | 3 | **DEV-003** | done | `organizations` (UUID), Memberships, idempotenter Demo-Seeder, ADR-0001. |
 | 4 | **DEV-004** | done | `tenant`-Middleware, Error/Empty/Loading, Validierungs-/Actions-Konvention. |
-| 5 | **DEV-005** | delta | Shell existiert. EquiFlow-Navigation, Org-Switcher-Platzhalter, `/dev/ui`, Mobile-Nav. |
+| 5 | **DEV-005** | done | Shell existiert. EquiFlow-Navigation, Org-Switcher-Platzhalter, `/dev/ui`, Mobile-Nav. |
 | 6 | **DEV-006** | neu | PWA hängt an der Shell. |
 | 7 | **DEV-007** | delta | CI härten (PHP 8.4, Migration, Vite-Build). Braucht DEV-001 und DEV-003. |
 | 8 | **SEC-001** | delta | Fortify ist da. Session/Logout/Verifikation gegen Akzeptanzkriterien prüfen. |
@@ -52,7 +52,7 @@ R1 (`CORE-001`) erst, wenn die Tabelle unten durchgängig `done` ist.
 | DEV-001 | **done** | README/Herd, `.env.example` (SQLite/pgsql, `APP_LOCALE=de`), PHP ^8.4, CI PHP 8.4, `tests/Feature/SmokeTest.php` | — |
 | DEV-003 | **done** | `organizations` (UUID-PK), `organization_memberships`, Factories, idempotenter Demo-Seeder, [ADR-0001](architecture/adr/0001-uuid-primary-keys.md) | — |
 | DEV-004 | **done** | `tenant`-Gruppe (`EnsureActiveOrganization`), `errors/no-organization`, `<x-ui.*>`, JSON-Handler blieb | — |
-| DEV-005 | offen / delta | Flux-Sidebar, Header, Layouts | Mobile Bottom-Nav; Org-Switcher-Platzhalter; `/dev/ui`; 360px-/Touch-Tests |
+| DEV-005 | **done** | Flux-Sidebar, Header, Layouts; Livewire-Bottom-Nav (`mobile-navigation`, 44px); Org-Switcher-Platzhalter; `/dev/ui` (local/testing); 360px-/Toggle-Tests | — |
 | DEV-006 | offen / neu | Favicons in `partials/head` | Manifest, Service Worker, Offline-Fallback, Theme-Farben |
 | DEV-007 | offen / delta | `.github/workflows/tests.yml` (PHP 8.4, `composer setup` + `ci:check`) | Expliziter Migrate-Schritt; Vite-Build; ggf. `ci.yml` laut Ticket |
 | DEV-008 | **done** | `Docu/architecture/*`, EquiFlow-Block in AGENTS/CLAUDE, `.ai/rules/index.md` | — |

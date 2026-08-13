@@ -3,12 +3,16 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
+    <body class="min-h-screen overflow-x-hidden bg-white dark:bg-zinc-800">
         <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.header>
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
                 <flux:sidebar.collapse class="lg:hidden" />
             </flux:sidebar.header>
+
+            <div class="px-2 pb-2">
+                <x-organization-switcher-placeholder />
+            </div>
 
             <flux:sidebar.nav>
                 <flux:sidebar.group :heading="__('Platform')" class="grid">
@@ -35,7 +39,9 @@
 
         <!-- Mobile User Menu -->
         <flux:header class="lg:hidden">
-            <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+            <flux:sidebar.toggle class="min-h-11 min-w-11 lg:hidden" icon="bars-2" inset="left" />
+
+            <x-organization-switcher-placeholder class="min-w-0 max-w-40" />
 
             <flux:spacer />
 
@@ -89,6 +95,8 @@
         </flux:header>
 
         {{ $slot }}
+
+        <livewire:mobile-navigation />
 
         @persist('toast')
             <flux:toast.group>
