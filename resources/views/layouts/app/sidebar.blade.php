@@ -18,6 +18,9 @@
 
             <flux:sidebar.nav>
                 <flux:sidebar.group :heading="__('Platform')" class="grid">
+                    @php
+                        $activeOrganization = \App\Http\Middleware\EnsureActiveOrganization::organization();
+                    @endphp
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
@@ -26,11 +29,18 @@
                             {{ __('Finance') }}
                         </flux:sidebar.item>
                     @endcan
-                    @can(\App\Enums\PermissionName::UsersManage->value)
-                        <flux:sidebar.item icon="users" :href="route('members')" :current="request()->routeIs('members')" wire:navigate>
-                            {{ __('Members') }}
+                    @if ($activeOrganization?->hasModule(\App\Enums\ModuleName::Club))
+                        @can(\App\Enums\PermissionName::UsersManage->value)
+                            <flux:sidebar.item icon="users" :href="route('members')" :current="request()->routeIs('members')" wire:navigate>
+                                {{ __('Members') }}
+                            </flux:sidebar.item>
+                        @endcan
+                    @endif
+                    @if ($activeOrganization?->hasModule(\App\Enums\ModuleName::Stable))
+                        <flux:sidebar.item icon="home-modern" :href="route('stable')" :current="request()->routeIs('stable')" wire:navigate>
+                            {{ __('Stable') }}
                         </flux:sidebar.item>
-                    @endcan
+                    @endif
                     @can(\App\Enums\PermissionName::AuditView->value)
                         <flux:sidebar.item icon="clipboard-document-list" :href="route('audit')" :current="request()->routeIs('audit')" wire:navigate>
                             {{ __('Audit log') }}

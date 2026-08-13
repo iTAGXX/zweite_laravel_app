@@ -28,3 +28,6 @@ Accepting an invitation looks up Invitation::findForAcceptance() without the ten
 
 ## AuditLog is immutable and allowlisted
 AuditLog is a UUID tenant model with BelongsToOrganization. organization_id is nullable for auth events without org context; the admin UI still only sees the active org. subject_id is a string (UUID invitations and integer users). No updated_at; updating/deleting return false. Never observe AuditLog itself. Writes go through AuditLogger, not HTTP.
+
+## Org type enum and JSON module flags
+Organization stores type as OrganizationType enum and enabled_modules as JSON (AsEnumCollection of ModuleName: club, stable). Mixed default is both modules. Do not add a feature_flags table; defaults live on OrganizationType::defaultModules(). hasModule() is the only check for whether a Fachmodul is on.

@@ -23,3 +23,6 @@ Dashboard and tenant routes stay behind auth + verified. settings/profile stays 
 
 ## CSRF stays on for web writes
 CSRF stays on via PreventRequestForgery for the web group. Livewire sends the token. Extra AJAX must send X-CSRF-TOKEN or X-XSRF-TOKEN. Webhooks go outside web or use preventRequestForgery(except:) plus a signature check. Login remains Fortify RateLimiter login at 5/min.
+
+## Module routes require EnsureModuleEnabled
+Fachmodule (members=club, stable=stable) must use the module middleware alias (module:club / module:stable) in addition to any Gate. Hiding a nav item is UX only; a disabled module route must 403. Finance stays Gate-only (finance.view), not a type module.

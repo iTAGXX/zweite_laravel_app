@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PermissionName;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
@@ -16,6 +17,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'password.confirm',
         ])
         ->name('security.edit');
+});
+
+Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
+    Route::livewire('settings/organization', 'pages::settings.organization')
+        ->middleware('can:'.PermissionName::UsersManage->value)
+        ->name('organization.edit');
 });
 
 Route::get('.well-known/passkey-endpoints', function () {

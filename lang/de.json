@@ -30,5 +30,17 @@
     "Expires :date": "Läuft ab am :date",
     "Audit log": "Prüfprotokoll",
     "Audit events will appear here.": "Prüfereignisse erscheinen hier.",
-    "System": "System"
+    "System": "System",
+    "Organization": "Organisation",
+    "Organization settings": "Organisationseinstellungen",
+    "Choose the organization type and enabled modules": "Organisationstyp und aktive Module festlegen",
+    "Organization type": "Organisationstyp",
+    "Organization settings updated.": "Organisationseinstellungen gespeichert.",
+    "Club": "Verein",
+    "Stable": "Betrieb",
+    "Mixed": "Mischform",
+    "Modules": "Module",
+    "Club module": "Verein",
+    "Stable module": "Betrieb",
+    "Stable modules will appear here.": "Betriebsmodule erscheinen hier."
 }

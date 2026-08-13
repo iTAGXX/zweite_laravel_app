@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Models\Organization;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Context;
@@ -36,6 +37,17 @@ class EnsureActiveOrganization
     {
         Context::forget(self::SESSION_KEY);
         session()->forget(self::SESSION_KEY);
+    }
+
+    public static function organization(): ?Organization
+    {
+        $organizationId = self::id();
+
+        if ($organizationId === null) {
+            return null;
+        }
+
+        return Organization::query()->find($organizationId);
     }
 
     /**

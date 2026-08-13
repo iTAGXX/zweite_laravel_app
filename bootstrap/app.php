@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureActiveOrganization;
+use App\Http\Middleware\EnsureModuleEnabled;
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -19,6 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->authenticateSessions();
         $middleware->appendToGroup('tenant', [
             EnsureActiveOrganization::class,
+        ]);
+        $middleware->alias([
+            'module' => EnsureModuleEnabled::class,
         ]);
         $middleware->prependToPriorityList(
             before: SubstituteBindings::class,

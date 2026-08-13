@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\ModuleName;
 use App\Enums\PermissionName;
 use App\Http\Controllers\AcceptInvitationController;
 use App\Http\Controllers\WebAppManifestController;
@@ -27,8 +28,11 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
         ->middleware('can:'.PermissionName::FinanceView->value)
         ->name('finance');
     Route::view('members', 'members')
-        ->middleware('can:'.PermissionName::UsersManage->value)
+        ->middleware(['can:'.PermissionName::UsersManage->value, 'module:'.ModuleName::Club->value])
         ->name('members');
+    Route::view('stable', 'stable')
+        ->middleware('module:'.ModuleName::Stable->value)
+        ->name('stable');
     Route::view('audit', 'audit')
         ->middleware('can:'.PermissionName::AuditView->value)
         ->name('audit');

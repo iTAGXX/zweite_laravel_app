@@ -10,3 +10,6 @@ Authorize with policies or named Gates matching PermissionName values (users.man
 
 ## Audit logs are read-only even for admins
 AuditLogPolicy: view/viewAny require audit.view (admin). create/update/delete/restore/forceDelete are always false, including for admins. Writes exist only through AuditLogger.
+
+## Org settings only for active tenant
+OrganizationPolicy update/view allow only users.manage and only when the target Organization is the active session org (EnsureActiveOrganization::id()). Never accept another tenant's organization id for settings writes.

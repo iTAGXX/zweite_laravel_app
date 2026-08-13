@@ -1,6 +1,6 @@
 # EquiFlow
 
-Setup: `README.md`. Ticket-Reihenfolge: `Docu/R0_Kickoff.md`. Architektur: `Docu/architecture/overview.md`. DoD: `Docu/architecture/definition-of-done.md`.
+Setup: `README.md`. Ticket-Reihenfolge: `Docu/R1_Kickoff.md` (R0 abgeschlossen: `Docu/R0_Kickoff.md`). Architektur: `Docu/architecture/overview.md`. DoD: `Docu/architecture/definition-of-done.md`.
 
 - Ein Ticket pro Agent-Task. Keine sachfremden Refactorings.
 - Kein Produktions-Deploy. Security-Änderungen, Migrationen und Production brauchen menschliche Freigabe.

@@ -97,3 +97,5 @@ R0 ist fertig, wenn:
 - Cross-Tenant-Test (SEC-003) und Permission-Negativtests (SEC-004) grün sind
 - `.ai/rules/index.md` existiert
 - kein Produktions-Deploy ohne menschliche Freigabe erfolgte
+
+Weiter: [`R1_Kickoff.md`](R1_Kickoff.md).
