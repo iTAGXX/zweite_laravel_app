@@ -29,7 +29,7 @@ Kurze Landkarte für Entwickler und Coding-Agents. Ticket-Details stehen im Back
 - Autorisierung: Gäste → Login. Unverifiziert → `verification.notice`. Authentifiziert ohne Recht → 403. Ohne Organisation auf `tenant`-Routen → `errors/no-organization` (403).
 - JSON-Fehler für `api/*` und `expectsJson()` in `bootstrap/app.php` (schon konfiguriert).
 - Livewire-first: keine allgemeine REST-API im MVP. Nur punktuelle Controller (Webhooks, Health `/up`, öffentliche Anmeldung später).
-- Security-Header global (`SecurityHeaders`: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`). Login-Rate-Limit 5/min (Fortify `RateLimiter` `login`).
+- Security-Header global (`SecurityHeaders`: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`). Login-Rate-Limit 5/min (Fortify `RateLimiter` `login`). Passwort-Reset enumeration-safe; Einladungs-Token (`invitations`) mit `expires_at`/`used_at` (gehasht, Single-Use).
 - Routen: `routes/web.php` plus bereichsspezifische Dateien (`routes/settings.php`). Mandanten-Routen: Middleware-Gruppe `tenant` (`EnsureActiveOrganization`, Session-Key `active_organization_id`). Session vs. URL entscheidet SEC-003.
 
 ## Frontend

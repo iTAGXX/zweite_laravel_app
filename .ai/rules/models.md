@@ -13,3 +13,6 @@ Domain aggregates (Organization, later people/horses/contracts) use UUID primary
 
 ## MustVerifyEmail is required on User
 User implements MustVerifyEmail (ADR-0002). Keep Fortify Features::emailVerification enabled. Do not drop the interface without a new ADR; otherwise verified middleware is a no-op and unverified users reach the dashboard.
+
+## Invitation tokens are hashed single-use
+Invitation is a UUID domain aggregate with organization_id NOT NULL, hashed token, expires_at, and used_at. Issue via IssueInvitationToken; consume() once. Do not store plaintext tokens. BelongsToOrganization global scope comes in SEC-003.

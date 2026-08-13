@@ -37,7 +37,7 @@ Abweichungen vom Backlog sind Absicht: Doku früh, Tenant-Middleware erst nach O
 | 7 | **DEV-007** | skipped | CI härten (PHP 8.4, Migration, Vite-Build). Bewusst nicht: Starter-CI (PHP 8.4, `composer setup` + `ci:check`) reicht. |
 | 8 | **SEC-001** | done | Fortify ist da. Session/Logout/Verifikation gegen Akzeptanzkriterien prüfen. |
 | 9 | **SEC-007** | done | Login-Rate-Limit existiert. Header + 429-Tests nachziehen. Unabhängig von Tenant. |
-| 10 | **SEC-002** | delta+neu | Reset ist da. Einladungs-Token-Modell neu (für SEC-005). |
+| 10 | **SEC-002** | done | Reset ist da. Einladungs-Token-Modell neu (für SEC-005). |
 | 11 | **SEC-003** | neu | Harte Tenant-Isolation. Kern von R0. |
 | 12 | **SEC-004** | neu | RBAC, Policies, Standardrollen. |
 | 13 | **SEC-005** | neu | Einladungen + Org-Switcher. |
@@ -57,7 +57,7 @@ R1 (`CORE-001`) erst, wenn die Tabelle unten durchgängig `done` oder bewusst `s
 | DEV-007 | **skipped** | `.github/workflows/tests.yml` (PHP 8.4, `composer setup` + `ci:check`) | Bewusst nicht nachgezogen: expliziter Migrate-Schritt, Vite-Build, extra `ci.yml`. |
 | DEV-008 | **done** | `Docu/architecture/*`, EquiFlow-Block in AGENTS/CLAUDE, `.ai/rules/index.md` | — |
 | SEC-001 | **done** | Fortify, `MustVerifyEmail`, `verified` auf Dashboard/Tenant, Session `http_only` + `same_site=lax`, Logout invalidiert Session (Pest) | — |
-| SEC-002 | offen / delta+neu | Password-Reset + Tests, `MAIL_MAILER=log` | Enumeration-safe prüfen; Token-Modell `expires_at`/`used_at` für Einladungen |
+| SEC-002 | **done** | Fortify-Reset, `MAIL_MAILER=log`, enumeration-safe Link-Request, `invitations` (`expires_at`/`used_at`, gehasht) | — |
 | SEC-003 | offen / neu | — | ActiveOrganization, Global Scope, IDOR-Tests |
 | SEC-004 | offen / neu | — | Role/Permission, Policies, Seeder |
 | SEC-005 | offen / neu | — | Invitation-Flow, Org-Switcher |
