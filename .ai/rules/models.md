@@ -34,3 +34,9 @@ Organization stores type as OrganizationType enum and enabled_modules as JSON (A
 
 ## Person is shared identity with archived_at
 Person is a UUID tenant aggregate with BelongsToOrganization, optional user_id (unique per org, not required 1:1), and archived_at instead of SoftDeletes. Do not add a type/role column; Member/Customer attach later via person_id. Default lists use notArchived/archivedStatus; archived rows stay reachable for edit/unarchive. Cross-tenant IDs are 404.
+
+## Document metadata in DB, bytes in Storage
+Document and DocumentVersion are UUID tenant aggregates with BelongsToOrganization. Bytes live on the Storage disk (DOCUMENT_DISK=local|s3), never in the DB. Storage keys are random (org id + UUID), not the original filename. currentVersion is the max version_number. See ADR-0008.
+
+## Task is UUID tenant aggregate with person assignee
+Task is a UUID tenant aggregate with BelongsToOrganization. Assignee is Person (assignee_id), not User. Status/priority are PHP enums. Object links live in task_links with a closed TaskLinkableType allowlist (person first); do not add fake domain models or open morph. Cross-tenant IDs are 404.

@@ -29,6 +29,16 @@
                             {{ __('People') }}
                         </flux:sidebar.item>
                     @endcan
+                    @can(\App\Enums\PermissionName::TasksManage->value)
+                        <flux:sidebar.item icon="clipboard-document-check" :href="route('tasks.index')" :current="request()->routeIs('tasks.*')" wire:navigate>
+                            {{ __('Tasks') }}
+                        </flux:sidebar.item>
+                    @endcan
+                    @can(\App\Enums\PermissionName::DocumentsManage->value)
+                        <flux:sidebar.item icon="document-text" :href="route('documents.index')" :current="request()->routeIs('documents.*')" wire:navigate>
+                            {{ __('Documents') }}
+                        </flux:sidebar.item>
+                    @endcan
                     @can(\App\Enums\PermissionName::FinanceView->value)
                         <flux:sidebar.item icon="banknotes" :href="route('finance')" :current="request()->routeIs('finance')" wire:navigate>
                             {{ __('Finance') }}

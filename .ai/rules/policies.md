@@ -16,3 +16,9 @@ OrganizationPolicy update/view allow only users.manage and only when the target 
 
 ## PersonPolicy archives instead of deleting
 PersonPolicy uses people.manage for viewAny/view/create/update/archive/unarchive. delete, restore, and forceDelete stay false; archive via archived_at, no hard delete in CORE-002.
+
+## DocumentPolicy uses documents.manage
+DocumentPolicy uses documents.manage for viewAny/view/create/update/delete. restore and forceDelete stay false. Cross-tenant file download is 403 (signed route + policy), not 404.
+
+## TaskPolicy uses tasks.manage
+TaskPolicy uses tasks.manage for viewAny/view/create/update/complete/assign/delete. restore and forceDelete stay false. Staff does not have tasks.manage yet.

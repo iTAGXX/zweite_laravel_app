@@ -26,7 +26,7 @@ Kurze Landkarte für Entwickler und Coding-Agents. Ticket-Details stehen im Back
 - Fachlogik in `app/Actions`. Neue Actions: eine Klasse, Methode `handle()`. Fortify-Actions behalten die Vertragsmethoden (`create`, …).
 - Livewire-Validierung: Traits in `app/Concerns` (Muster: `ProfileValidationRules`). Feldfehler über `<flux:input>` / `<flux:field>`; Formularzusammenfassung: `<x-ui.form-errors />`.
 - Leer-/Fehler-/Ladezustände: `<x-ui.empty-state>`, `<x-ui.error-state>`, `<x-ui.loading-state>`.
-- Autorisierung: Gäste → Login. Unverifiziert → `verification.notice`. Authentifiziert ohne Recht → 403. Ohne Organisation auf `tenant`-Routen → `errors/no-organization` (403). Rollen über `organization_memberships.role_id`; Permissions als Gates (`users.manage`, `finance.view`, `audit.view`, `people.manage`). UI-`@can` ist nur UX ([ADR-0004](adr/0004-custom-rbac.md)).
+- Autorisierung: Gäste → Login. Unverifiziert → `verification.notice`. Authentifiziert ohne Recht → 403. Ohne Organisation auf `tenant`-Routen → `errors/no-organization` (403). Rollen über `organization_memberships.role_id`; Permissions als Gates (`users.manage`, `finance.view`, `audit.view`, `people.manage`, `documents.manage`, `tasks.manage`). UI-`@can` ist nur UX ([ADR-0004](adr/0004-custom-rbac.md)).
 - Audit: unveränderbare `audit_logs` über `AuditLogger` + Observer/Login-Listener; Metadata-Allowlist, keine Passwörter/Tokens/IBAN-Vollwerte ([ADR-0005](adr/0005-immutable-audit-log.md)). Admin-Ansicht `/audit`.
 - JSON-Fehler für `api/*` und `expectsJson()` in `bootstrap/app.php` (schon konfiguriert).
 - Livewire-first: keine allgemeine REST-API im MVP. Nur punktuelle Controller (Webhooks, Health `/up`, öffentliche Anmeldung später).
@@ -48,11 +48,15 @@ Kurze Landkarte für Entwickler und Coding-Agents. Ticket-Details stehen im Back
 
 `Person` ist das zentrale Personenaggregat (UUID, optionales `user_id`, Archiv über `archived_at`, [ADR-0007](adr/0007-person-aggregate-and-archive.md)). Member-/Customer-Profile kommen später und zeigen auf dieselbe Person.
 
+`Task` ist das zentrale Aufgabenaggregat (UUID, Assignee=`Person`, Status/Priorität, Quick-Create, [ADR-0009](adr/0009-task-aggregate-and-allowlisted-links.md)). Objekt-Links über `task_links` mit Enum-Allowlist (zuerst `person`); keine Fake-Fachmodelle.
+
+`Document` / `DocumentVersion` speichern Dateimetadaten mandantenbezogen; Bytes liegen auf der Storage-Disk (`local` bzw. `s3` über `DOCUMENT_DISK`), Downloads über signierte Temporary URLs mit `Content-Disposition: attachment` ([ADR-0008](adr/0008-document-storage.md)). Cross-Tenant-Download ist 403.
+
 Organisationstyp (`OrganizationType`) und Modul-Flags (`enabled_modules` JSON) liegen auf `organizations` ([ADR-0006](adr/0006-organization-type-and-module-flags.md)). Deaktivierte Module fehlen in der Nav und liefern 403 auf der Route. Org-Settings ändern nur den aktiven Mandanten (`OrganizationPolicy`, `users.manage`).
 
 ## Dateien und Betrieb
 
-- Dateien über Laravel `Storage` (`local` lokal, S3-kompatibel in der Cloud). Die DB speichert Metadaten, keine Binärdateien.
+- Dateien über Laravel `Storage` (`local` lokal, S3-kompatibel in der Cloud, `DOCUMENT_DISK`). Die DB speichert Metadaten, keine Binärdateien. Kein Public-Pfad; zufällige Keys; MIME-/Größen-Whitelist in `config/documents.php`.
 - Deploy: GitHub → Laravel Cloud. Staging nach grünem CI, Production nur mit Freigabe.
 
 ## Dokumente in diesem Ordner

@@ -75,5 +75,19 @@
     "Person restored.": "Person wiederhergestellt.",
     "Archive person": "Person archivieren",
     "Restore person": "Person wiederherstellen",
-    "Archive this person? They will be hidden from the default list.": "Diese Person archivieren? Sie wird in der Standardliste ausgeblendet."
+    "Archive this person? They will be hidden from the default list.": "Diese Person archivieren? Sie wird in der Standardliste ausgeblendet.",
+    "Documents": "Dokumente",
+    "Upload document": "Dokument hochladen",
+    "Title": "Titel",
+    "File": "Datei",
+    "Download": "Herunterladen",
+    "Delete": "Löschen",
+    "No file": "Keine Datei",
+    "No documents yet": "Noch keine Dokumente",
+    "Upload a file to the tenant document store. Bytes stay in storage, metadata in the database.": "Lade eine Datei in die mandantensichere Ablage. Die Bytes bleiben im Storage, die Metadaten in der Datenbank.",
+    "Files are stored privately per organization. Downloads use a short-lived signed URL.": "Dateien werden privat je Organisation gespeichert. Downloads nutzen eine kurzlebige signierte URL.",
+    "Document uploaded.": "Dokument hochgeladen.",
+    "Document deleted.": "Dokument gelöscht.",
+    "Delete this document? The file will be removed from storage.": "Dieses Dokument löschen? Die Datei wird aus dem Storage entfernt.",
+    "This file type is not allowed.": "Dieser Dateityp ist nicht erlaubt."
 }

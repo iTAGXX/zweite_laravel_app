@@ -3,6 +3,7 @@
 use App\Enums\ModuleName;
 use App\Enums\PermissionName;
 use App\Http\Controllers\AcceptInvitationController;
+use App\Http\Controllers\DownloadDocumentController;
 use App\Http\Controllers\WebAppManifestController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -28,6 +29,17 @@ Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
         Route::livewire('people', 'pages::people.index')->name('people.index');
         Route::livewire('people/create', 'pages::people.create')->name('people.create');
         Route::livewire('people/{person}/edit', 'pages::people.edit')->name('people.edit');
+    });
+    Route::middleware('can:'.PermissionName::TasksManage->value)->group(function () {
+        Route::livewire('tasks', 'pages::tasks.index')->name('tasks.index');
+        Route::livewire('tasks/{task}/edit', 'pages::tasks.edit')->name('tasks.edit');
+    });
+    Route::middleware('can:'.PermissionName::DocumentsManage->value)->group(function () {
+        Route::livewire('documents', 'pages::documents.index')->name('documents.index');
+        Route::livewire('documents/create', 'pages::documents.create')->name('documents.create');
+        Route::get('documents/{document}/download', DownloadDocumentController::class)
+            ->middleware('signed')
+            ->name('documents.download');
     });
     Route::view('finance', 'finance')
         ->middleware('can:'.PermissionName::FinanceView->value)

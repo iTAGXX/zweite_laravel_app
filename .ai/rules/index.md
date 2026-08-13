@@ -10,6 +10,7 @@ Before planning or editing, find the row whose globs match the file's path and r
 | bootstrap/app.php | .ai/rules/bootstrap.md |
 | resources/views/components/offline-notice.blade.php | .ai/rules/components.md |
 | config/session.php | .ai/rules/config.md |
+| app/Http/Controllers/*.php | .ai/rules/controllers.md |
 | composer.json, .env.example, phpstan.neon | .ai/rules/general.md |
 | resources/views/layouts/**/*.blade.php | .ai/rules/layouts.md |
 | app/Http/Middleware/*.php | .ai/rules/middleware.md |

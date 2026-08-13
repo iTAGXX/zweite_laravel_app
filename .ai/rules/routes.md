@@ -29,3 +29,9 @@ Fachmodule (members=club, stable=stable) must use the module middleware alias (m
 
 ## People routes use people.manage
 Person CRUD is Livewire pages at /people, /people/create, /people/{person}/edit behind auth+verified+tenant and can:people.manage. People is platform core, not a club/stable module flag.
+
+## Document routes use documents.manage and signed download
+Document upload/list are Livewire pages at /documents and /documents/create behind auth+verified+tenant and can:documents.manage. Download is GET /documents/{document}/download with signed middleware; the controller looks up by tenant scope and aborts 403 if missing. Do not serve documents from the public disk.
+
+## Task routes use tasks.manage
+Task CRUD is Livewire pages at /tasks and /tasks/{task}/edit behind auth+verified+tenant and can:tasks.manage. Quick-create lives on the index page (max three steps). Tasks are platform core, not a club/stable module flag.

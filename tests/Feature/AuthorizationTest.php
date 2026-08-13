@@ -27,6 +27,14 @@ test('staff cannot open finance, members, people, or audit', function () {
         ->assertForbidden();
 
     $this->actingAs($user)
+        ->get(route('tasks.index'))
+        ->assertForbidden();
+
+    $this->actingAs($user)
+        ->get(route('documents.index'))
+        ->assertForbidden();
+
+    $this->actingAs($user)
         ->get(route('audit'))
         ->assertForbidden();
 });
@@ -48,11 +56,19 @@ test('treasurer can open finance but not members or people', function () {
         ->assertForbidden();
 
     $this->actingAs($user)
+        ->get(route('tasks.index'))
+        ->assertForbidden();
+
+    $this->actingAs($user)
+        ->get(route('documents.index'))
+        ->assertForbidden();
+
+    $this->actingAs($user)
         ->get(route('audit'))
         ->assertForbidden();
 });
 
-test('admin can open finance, members, people, and audit', function () {
+test('admin can open finance, members, people, documents, and audit', function () {
     $user = User::factory()->withOrganization(RoleName::Admin)->create();
 
     $this->actingAs($user)
@@ -65,6 +81,14 @@ test('admin can open finance, members, people, and audit', function () {
 
     $this->actingAs($user)
         ->get(route('people.index'))
+        ->assertOk();
+
+    $this->actingAs($user)
+        ->get(route('tasks.index'))
+        ->assertOk();
+
+    $this->actingAs($user)
+        ->get(route('documents.index'))
         ->assertOk();
 
     $this->actingAs($user)
@@ -82,6 +106,8 @@ test('staff does not see finance, members, or people in the sidebar', function (
         ->assertDontSee(route('finance'), false)
         ->assertDontSee(route('members'), false)
         ->assertDontSee(route('people.index'), false)
+        ->assertDontSee(route('tasks.index'), false)
+        ->assertDontSee(route('documents.index'), false)
         ->assertDontSee(route('audit'), false);
 });
 
@@ -93,5 +119,7 @@ test('treasurer sees finance but not members in the sidebar', function () {
         ->assertOk()
         ->assertSee(__('Finance'))
         ->assertDontSee(__('Members'), false)
-        ->assertDontSee(__('People'), false);
+        ->assertDontSee(__('People'), false)
+        ->assertDontSee(__('Tasks'), false)
+        ->assertDontSee(__('Documents'), false);
 });
