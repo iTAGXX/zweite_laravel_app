@@ -20,7 +20,7 @@ R0 abschließen, bevor R1 (Plattformkern) oder Fachmodule (Verein, Pferdebetrieb
 
 Vorhanden: Laravel 13, PHP ^8.4, Livewire 4, Flux 2, Fortify, Pest, Pint, Larastan Level 7, App-Shell, Smoke-Tests, README/Herd, UI-Locale `de`, `Docu/architecture/*`, EquiFlow-Block in `AGENTS.md`/`CLAUDE.md`.
 
-Fehlt: Audit, Einladungs-Flow.
+Fehlt: Audit.
 
 ## Empfohlene Reihenfolge
 
@@ -40,7 +40,7 @@ Abweichungen vom Backlog sind Absicht: Doku früh, Tenant-Middleware erst nach O
 | 10 | **SEC-002** | done | Reset ist da. Einladungs-Token-Modell neu (für SEC-005). |
 | 11 | **SEC-003** | done | Harte Tenant-Isolation. Kern von R0. |
 | 12 | **SEC-004** | done | RBAC, Policies, Standardrollen. |
-| 13 | **SEC-005** | neu | Einladungen + Org-Switcher. |
+| 13 | **SEC-005** | done | Einladungen + Org-Switcher. |
 | 14 | **SEC-006** | neu | Audit-Log. |
 
 R1 (`CORE-001`) erst, wenn die Tabelle unten durchgängig `done` oder bewusst `skipped` ist.
@@ -60,7 +60,7 @@ R1 (`CORE-001`) erst, wenn die Tabelle unten durchgängig `done` oder bewusst `s
 | SEC-002 | **done** | Fortify-Reset, `MAIL_MAILER=log`, enumeration-safe Link-Request, `invitations` (`expires_at`/`used_at`, gehasht) | — |
 | SEC-003 | **done** | Session-Kontext [ADR-0003](architecture/adr/0003-organization-context-session.md), `BelongsToOrganization` auf `Invitation`, IDOR → 404 | — |
 | SEC-004 | **done** | Eigenes RBAC [ADR-0004](architecture/adr/0004-custom-rbac.md), Rollen admin/treasurer/member/staff, Gates `users.manage`/`finance.view`, InvitationPolicy, 403 ohne Permission | — |
-| SEC-005 | offen / neu | — | Invitation-Flow, Org-Switcher |
+| SEC-005 | **done** | Einladen per Livewire + Mailable; Annehmen setzt Membership+Rolle; Org-Switcher schreibt Session (ADR-0003) | — |
 | SEC-006 | offen / neu | — | AuditLog, Observer, Allowlist, Admin-Ansicht |
 | SEC-007 | **done** | Login-RateLimiter (5/min); globale `SecurityHeaders`; CSRF in Security-Checkliste; 429- und Header-Tests | — |
 

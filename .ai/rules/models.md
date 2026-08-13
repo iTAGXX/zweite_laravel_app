@@ -22,3 +22,6 @@ Tenant-owned models (not Organization, User, or join tables like organization_me
 
 ## Permissions come from membership role
 RBAC is a global role catalog (admin, treasurer, member, staff) plus permission slugs. Membership.role_id in the active organization is the source of rights. Role/Permission are not tenant-scoped. User::hasPermission() is deny-by-default when context or role is missing.
+
+## Invitation accept bypasses tenant scope
+Accepting an invitation looks up Invitation::findForAcceptance() without the tenant global scope (guest/other-org). Do not use implicit Invitation binding on the accept route. Tokens stay hashed; the plaintext token is only in the mail URL.

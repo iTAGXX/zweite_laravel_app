@@ -13,7 +13,7 @@
             </flux:sidebar.header>
 
             <div class="px-2 pb-2">
-                <x-organization-switcher-placeholder />
+                <livewire:organization-switcher />
             </div>
 
             <flux:sidebar.nav>
@@ -53,7 +53,7 @@
         <flux:header class="lg:hidden">
             <flux:sidebar.toggle class="min-h-11 min-w-11 lg:hidden" icon="bars-2" inset="left" />
 
-            <x-organization-switcher-placeholder class="min-w-0 max-w-40" />
+            <livewire:organization-switcher class="min-w-0 max-w-40" />
 
             <flux:spacer />
 

@@ -11,7 +11,7 @@
 
             <x-app-logo href="{{ route('dashboard') }}" wire:navigate />
 
-            <x-organization-switcher-placeholder class="ms-2 hidden min-w-0 max-w-48 sm:block" />
+            <livewire:organization-switcher class="ms-2 hidden min-w-0 max-w-48 sm:block" />
 
             <flux:navbar class="-mb-px max-lg:hidden">
                 <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
@@ -56,7 +56,7 @@
             </flux:sidebar.header>
 
             <div class="px-2 pb-2">
-                <x-organization-switcher-placeholder />
+                <livewire:organization-switcher />
             </div>
 
             <flux:sidebar.nav>

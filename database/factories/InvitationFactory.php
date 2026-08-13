@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Models\Invitation;
 use App\Models\Organization;
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -21,6 +22,7 @@ class InvitationFactory extends Factory
     {
         return [
             'organization_id' => Organization::factory(),
+            'role_id' => Role::factory(),
             'email' => fake()->unique()->safeEmail(),
             'token' => Str::random(64),
             'expires_at' => now()->addDays(7),

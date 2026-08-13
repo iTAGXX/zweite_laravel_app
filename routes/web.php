@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\PermissionName;
+use App\Http\Controllers\AcceptInvitationController;
 use App\Http\Controllers\WebAppManifestController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -16,6 +17,9 @@ Route::get('/sw.js', function (): BinaryFileResponse {
         'Service-Worker-Allowed' => '/',
     ]);
 })->name('pwa.service-worker');
+
+Route::middleware('auth')->get('invitations/{invitation}/{token}', AcceptInvitationController::class)
+    ->name('invitations.accept');
 
 Route::middleware(['auth', 'verified', 'tenant'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');

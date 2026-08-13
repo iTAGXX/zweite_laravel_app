@@ -13,5 +13,19 @@
     "Finance": "Finanzen",
     "Finance modules will appear here.": "Finanzmodule erscheinen hier.",
     "Members": "Mitglieder",
-    "Member management will appear here.": "Die Mitgliederverwaltung erscheint hier."
+    "Member management will appear here.": "Die Mitgliederverwaltung erscheint hier.",
+    "Invite a member": "Mitglied einladen",
+    "Send invitation": "Einladung senden",
+    "Invitation sent.": "Einladung gesendet.",
+    "Pending invitations": "Offene Einladungen",
+    "No pending invitations": "Keine offenen Einladungen",
+    "Invite someone with their email address.": "Lade jemanden mit der E-Mail-Adresse ein.",
+    "Role": "Rolle",
+    "This person already belongs to the organization.": "Diese Person gehört bereits zur Organisation.",
+    "You are invited to :organization": "Du bist zu :organization eingeladen",
+    "Accept this invitation to join the organization. The link expires on :date.": "Nimm die Einladung an, um der Organisation beizutreten. Der Link läuft am :date ab.",
+    "Accept invitation": "Einladung annehmen",
+    "If you did not expect this invitation, you can ignore this email.": "Wenn du diese Einladung nicht erwartet hast, kannst du diese E-Mail ignorieren.",
+    "This invitation is invalid or has expired.": "Diese Einladung ist ungültig oder abgelaufen.",
+    "Expires :date": "Läuft ab am :date"
 }
