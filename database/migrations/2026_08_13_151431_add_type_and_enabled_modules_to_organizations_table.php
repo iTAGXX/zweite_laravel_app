@@ -13,10 +13,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('organizations', function (Blueprint $table) {
-            $table->string('type')->default('mixed');
-            $table->json('enabled_modules')->default('["club","stable"]');
-        });
+        if (! Schema::hasColumn('organizations', 'type')) {
+            Schema::table('organizations', function (Blueprint $table) {
+                $table->string('type')->default('mixed');
+            });
+        }
+
+        if (! Schema::hasColumn('organizations', 'enabled_modules')) {
+            Schema::table('organizations', function (Blueprint $table) {
+                $table->json('enabled_modules')->default('["club","stable"]');
+            });
+        }
     }
 
     /**
@@ -25,7 +32,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('organizations', function (Blueprint $table) {
-            $table->dropColumn(['type', 'enabled_modules']);
+            if (Schema::hasColumn('organizations', 'enabled_modules')) {
+                $table->dropColumn('enabled_modules');
+            }
+
+            if (Schema::hasColumn('organizations', 'type')) {
+                $table->dropColumn('type');
+            }
         });
     }
 };

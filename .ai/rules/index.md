@@ -14,6 +14,7 @@ Before planning or editing, find the row whose globs match the file's path and r
 | composer.json, .env.example, phpstan.neon | .ai/rules/general.md |
 | resources/views/layouts/**/*.blade.php | .ai/rules/layouts.md |
 | app/Http/Middleware/*.php | .ai/rules/middleware.md |
+| database/migrations/*.php | .ai/rules/migrations.md |
 | app/Models/*.php | .ai/rules/models.md |
 | app/Observers/**/*.php | .ai/rules/observers.md |
 | resources/views/partials/head.blade.php | .ai/rules/partials.md |
