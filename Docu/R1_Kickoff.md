@@ -35,7 +35,7 @@ Abweichungen vom Backlog sind Absicht: Stufe-A-P0 zuerst; CORE-006/007 bewusst s
 | 6 | **CORE-006** | skipped | Dokumentverknüpfungen brauchen Pferde/Sitzungen/Verträge. Erst mit R2/R3. |
 | 7 | **CORE-007** | skipped | Inbox/Mail erst, wenn Aufgaben und echte Empfänger produktiv genutzt werden. |
 
-R2 (`CLUB-001`) erst, wenn die Tabelle unten durchgängig `done` oder bewusst `skipped` ist.
+R2 (`CLUB-001`) erst, wenn die Tabelle unten durchgängig `done` oder bewusst `skipped` ist, und der R0-Nachzug ([`R0_Nachzug_Kickoff.md`](R0_Nachzug_Kickoff.md), SEC-008–011) erledigt ist.
 
 ## Gap-Analyse
 

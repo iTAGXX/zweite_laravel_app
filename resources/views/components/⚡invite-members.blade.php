@@ -1,10 +1,12 @@
 <?php
 
 use App\Actions\InviteMember;
+use App\Enums\PermissionName;
 use App\Enums\RoleName;
 use App\Http\Middleware\EnsureActiveOrganization;
 use App\Models\Invitation;
 use App\Models\Organization;
+use App\Models\OrganizationMembership;
 use App\Models\Role;
 use Flux\Flux;
 use Illuminate\Database\Eloquent\Collection;
@@ -19,7 +21,7 @@ new class extends Component
 
     public function mount(): void
     {
-        $this->authorize('create', Invitation::class);
+        $this->authorize(PermissionName::UsersManage->value);
 
         $memberRoleId = Role::query()->where('slug', RoleName::Member->value)->value('id');
 
@@ -74,6 +76,21 @@ new class extends Component
     }
 
     /**
+     * @return Collection<int, OrganizationMembership>
+     */
+    #[Computed]
+    public function memberships(): Collection
+    {
+        $this->authorize(PermissionName::UsersManage->value);
+
+        return OrganizationMembership::query()
+            ->with(['user', 'role'])
+            ->where('organization_id', $this->activeOrganization()->id)
+            ->oldest()
+            ->get();
+    }
+
+    /**
      * @return Collection<int, Invitation>
      */
     #[Computed]
@@ -98,6 +115,31 @@ new class extends Component
 ?>
 
 <div class="flex w-full min-w-0 flex-col gap-8">
+    <div class="space-y-4">
+        <flux:heading size="lg">{{ __('Users') }}</flux:heading>
+
+        @if ($this->memberships->isEmpty())
+            <x-ui.empty-state :heading="__('No users yet')" :text="__('Invite someone with their email address.')" />
+        @else
+            <flux:table>
+                <flux:table.columns>
+                    <flux:table.column>{{ __('Name') }}</flux:table.column>
+                    <flux:table.column>{{ __('Email') }}</flux:table.column>
+                    <flux:table.column>{{ __('Role') }}</flux:table.column>
+                </flux:table.columns>
+                <flux:table.rows>
+                    @foreach ($this->memberships as $membership)
+                        <flux:table.row :key="$membership->id">
+                            <flux:table.cell>{{ $membership->user?->name }}</flux:table.cell>
+                            <flux:table.cell>{{ $membership->user?->email }}</flux:table.cell>
+                            <flux:table.cell>{{ $membership->role?->name }}</flux:table.cell>
+                        </flux:table.row>
+                    @endforeach
+                </flux:table.rows>
+            </flux:table>
+        @endif
+    </div>
+
     <form wire:submit="sendInvitation" class="max-w-lg space-y-6">
         <flux:heading>{{ __('Invite a member') }}</flux:heading>
 

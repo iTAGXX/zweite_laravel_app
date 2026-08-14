@@ -303,7 +303,7 @@ Tickets: DEV-001, DEV-003, DEV-004, DEV-005, DEV-006, DEV-007, DEV-008, SEC-001,
 
 Tickets: SEC-008, SEC-009, SEC-010, SEC-011
 
-Gap nach SEC-005: `/members` kann nur einladen, nicht bestehende Login-User zeigen oder ohne SMTP aktivieren. Vor R2 umsetzen. Nicht mit CLUB-001 (Vereinsmitglieder/`Person`) vermischen.
+Gap nach SEC-005: `/members` kann nur einladen, nicht bestehende Login-User zeigen oder ohne SMTP aktivieren. Vor R2 umsetzen. Nicht mit CLUB-001 (Vereinsmitglieder/`Person`) vermischen. Ausführung: [`Docu/R0_Nachzug_Kickoff.md`](R0_Nachzug_Kickoff.md).
 
 ## R1 – Gemeinsamer Kern
 

@@ -16,3 +16,6 @@ Invite members with livewire:invite-members on the members page. @can remains UX
 
 ## Audit Livewire component is audit-log
 The audit admin page is resources/views/audit.blade.php wrapping livewire:audit-log. Do not name the Livewire component audit; that collides with the page view (same trap as members vs invite-members).
+
+## Organization user list lives in invite-members
+/members lists login users (User + OrganizationMembership) in livewire:invite-members, not a component named members (collides with the page view) and not Person/CLUB-001. Query memberships by the session organization_id (join table has no global scope), eager-load user and role, and authorize users.manage. Empty list uses x-ui.empty-state.
