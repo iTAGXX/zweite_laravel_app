@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -19,8 +20,15 @@ return new class extends Migration
         });
 
         $this->addColumnIfNotExists('enabled_modules', function (Blueprint $table) {
-            $table->json('enabled_modules')->default('["club","stable"]');
+            // MySQL does not allow string literals as DEFAULT on JSON columns (Error 1101).
+            // The column is nullable; existing rows are filled by the UPDATE below.
+            // New model instances receive the default from Organization::$attributes.
+            $table->json('enabled_modules')->nullable();
         });
+
+        DB::table('organizations')
+            ->whereNull('enabled_modules')
+            ->update(['enabled_modules' => '["club","stable"]']);
     }
 
     /**
